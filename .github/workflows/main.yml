@@ -58,7 +58,7 @@ jobs:
         version: latest
       
     - name: Push a package to Octopus Deploy 🐙
-      uses: OctopusDeploy/push-package-action@v1
+      uses: OctopusDeploy/push-package-action@v1.1.1
       with:
         api_key: ${{ secrets.OCTOPUS_API_KEY }}
         packages: water-tank-sensor.${{ github.run_number }}.zip
