@@ -12,14 +12,14 @@ on:
 
 jobs:
   build:
-    name: Test compiling examples for esp8266
+    name: Build & Publish
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout
+    - name: Checkout 
       uses: actions/checkout@v2
     
-    - name: Inject secrets
+    - name: Inject secrets 🔐
       run: |
         perl -pi -e 's/\$\{\{ secrets.WLAN_SSID \}\}/"$ENV{WLAN_SSID}"/' sketch/sketch.ino
         perl -pi -e 's/\$\{\{ secrets.WLAN_PASSWD \}\}/"$ENV{WLAN_PASSWD}"/' sketch/sketch.ino
@@ -34,7 +34,7 @@ jobs:
         IO_FEEDNAME: ${{ secrets.IO_FEEDNAME }}
 
     # cant get this to work via the required-libraries
-    - name: Get HCSR04 library
+    - name: Get HCSR04 library 
       uses: actions/checkout@v2
       with:
         repository: gamegine/HCSR04-ultrasonic-sensor-lib
@@ -53,12 +53,12 @@ jobs:
         zip water-tank-sensor.${{ github.run_number }}.zip ./sketch/build/esp8266.esp8266.nodemcuv2
 
     - name: Install Octopus CLI 🐙
-      uses: OctopusDeploy/install-octopus-cli-action@<version>
+      uses: OctopusDeploy/install-octopus-cli-action@v1.1.8
       with:
         version: latest
       
     - name: Push a package to Octopus Deploy 🐙
-      uses: OctopusDeploy/push-package-action@<version>
+      uses: OctopusDeploy/push-package-action@v1
       with:
         api_key: ${{ secrets.OCTOPUS_API_KEY }}
         packages: water-tank-sensor.${{ github.run_number }}.zip
