@@ -99,7 +99,6 @@ void SendData(float averageReading)
   WiFiClientSecure wifiClient;
   wifiClient.setInsecure();
 
-  string url = 
   http.begin(wifiClient, "https://io.adafruit.com/api/v2/" IO_USERNAME "/feeds/" IO_FEEDNAME "/data");
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
   http.addHeader("X-AIO-Key", IO_KEY);
