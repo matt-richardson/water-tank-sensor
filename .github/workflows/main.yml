@@ -63,3 +63,11 @@ jobs:
         api_key: ${{ secrets.OCTOPUS_API_KEY }}
         packages: water-tank-sensor.${{ github.run_number }}.zip
         server: ${{ secrets.OCTOPUS_SERVER }}
+
+    - name: 🐙 Create a release in Octopus Deploy
+      uses: OctopusDeploy/create-release-action@v1.1.1
+      with:
+        api_key: ${{ secrets.OCTOPUS_API_KEY }}
+        project: 'water-tank-sensor'
+        server: ${{ secrets.OCTOPUS_SERVER }}
+        release_number: ${{ github.run_number }}
