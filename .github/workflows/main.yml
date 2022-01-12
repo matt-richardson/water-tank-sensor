@@ -1,0 +1,26 @@
+name: CI
+
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Test compiling examples for esp8266
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Compile all examples
+      uses: ArminJo/arduino-test-compile@v3
+      with:
+        arduino-board-fqbn: esp8266:esp8266:huzzah:eesz=4M3M,xtal=80
+        platform-url: https://arduino.esp8266.com/stable/package_esp8266com_index.json
