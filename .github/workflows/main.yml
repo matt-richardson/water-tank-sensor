@@ -19,7 +19,7 @@ jobs:
     - name: Checkout 
       uses: actions/checkout@v2
     
-    - name: Inject secrets 🔐
+    - name: 🔐 Inject secrets
       run: |
         perl -pi -e 's/\$\{\{ secrets.WLAN_SSID \}\}/"$ENV{WLAN_SSID}"/' sketch/sketch.ino
         perl -pi -e 's/\$\{\{ secrets.WLAN_PASSWD \}\}/"$ENV{WLAN_PASSWD}"/' sketch/sketch.ino
@@ -48,16 +48,16 @@ jobs:
         platform-url: https://arduino.esp8266.com/stable/package_esp8266com_index.json
         #required-libraries: hcsr04-ultrasonic-sensor
 
-    - name: Zip binaries 🗜
+    - name: 🗜 Zip binaries 
       run: |
-        zip water-tank-sensor.${{ github.run_number }}.zip ./sketch/build/esp8266.esp8266.nodemcuv2
+        zip -r --junk-paths water-tank-sensor.${{ github.run_number }}.zip ./sketch/build/esp8266.esp8266.nodemcuv2
 
-    - name: Install Octopus CLI 🐙
+    - name: 🐙 Install Octopus CLI
       uses: OctopusDeploy/install-octopus-cli-action@v1.1.8
       with:
         version: latest
       
-    - name: Push a package to Octopus Deploy 🐙
+    - name: 🐙 Push a package to Octopus Deploy
       uses: OctopusDeploy/push-package-action@v1.1.1
       with:
         api_key: ${{ secrets.OCTOPUS_API_KEY }}
