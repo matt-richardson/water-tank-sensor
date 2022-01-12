@@ -18,6 +18,19 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+      
+    - run: |
+        perl -pi -e 's/\$\{\{ secrets.WLAN_SSID \}\}/"$ENV{WLAN_SSID}"/' sketch/sketch.ino
+        perl -pi -e 's/\$\{\{ secrets.WLAN_PASSWD \}\}/"$ENV{WLAN_PASSWD}"/' sketch/sketch.ino
+        perl -pi -e 's/\$\{\{ secrets.IO_USERNAME \}\}/"$ENV{IO_USERNAME}"/' sketch/sketch.ino
+        perl -pi -e 's/\$\{\{ secrets.IO_KEY \}\}/"$ENV{IO_KEY}"/' sketch/sketch.ino
+        perl -pi -e 's/\$\{\{ secrets.IO_FEEDNAME \}\}/"$ENV{IO_FEEDNAME}"/' sketch/sketch.ino
+      env:
+        WLAN_SSID: ${{ secrets.WLAN_SSID }}
+        WLAN_PASSWD: ${{ secrets.WLAN_PASSWD }}
+        IO_USERNAME: ${{ secrets.IO_USERNAME }}
+        IO_KEY: ${{ secrets.IO_KEY }}
+        IO_FEEDNAME: ${{ secrets.IO_FEEDNAME }}
 
     - name: Compile all examples
       uses: ArminJo/arduino-test-compile@v3
