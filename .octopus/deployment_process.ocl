@@ -8,7 +8,7 @@ step "Deploy package to arduino-updater staging folder" {
         properties = {
             Octopus.Action.RunOnServer = "false"
             Octopus.Action.Script.ScriptBody = <<-EOT
-                echo ##octopus[stderr-progress]
+                echo '##octopus[stderr-progress]'
                 set -ex
                 
                 mkdir -p /etc/octopus/tmp
