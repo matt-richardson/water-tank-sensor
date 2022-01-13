@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build & Publish
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout 
+      uses: actions/checkout@v2
+    
+    - name: 🔐 Inject secrets
+      run: |
+        perl -pi -e 's/\$\{\{ secrets.WLAN_SSID \}\}/"$ENV{WLAN_SSID}"/' sketch/sketch.ino
+        perl -pi -e 's/\$\{\{ secrets.WLAN_PASSWD \}\}/"$ENV{WLAN_PASSWD}"/' sketch/sketch.ino
+        perl -pi -e 's/\$\{\{ secrets.IO_USERNAME \}\}/"$ENV{IO_USERNAME}"/' sketch/sketch.ino
+        perl -pi -e 's/\$\{\{ secrets.IO_KEY \}\}/"$ENV{IO_KEY}"/' sketch/sketch.ino
+        perl -pi -e 's/\$\{\{ secrets.IO_FEEDNAME \}\}/"$ENV{IO_FEEDNAME}"/' sketch/sketch.ino
+      env:
+        WLAN_SSID: ${{ secrets.WLAN_SSID }}
+        WLAN_PASSWD: ${{ secrets.WLAN_PASSWD }}
+        IO_USERNAME: ${{ secrets.IO_USERNAME }}
+        IO_KEY: ${{ secrets.IO_KEY }}
+        IO_FEEDNAME: ${{ secrets.IO_FEEDNAME }}
+
+    # cant get this to work via the required-libraries
+    - name: Get HCSR04 library 
+      uses: actions/checkout@v2
+      with:
+        repository: gamegine/HCSR04-ultrasonic-sensor-lib
+        ref: master
+        path: CustomHCSR04 # must contain string "Custom"
+
+    - name: Compile 
+      uses: ArminJo/arduino-test-compile@v3
+      with:
+        arduino-board-fqbn: esp8266:esp8266:nodemcuv2:eesz=4M3M,xtal=80
+        platform-url: https://arduino.esp8266.com/stable/package_esp8266com_index.json
+        #required-libraries: hcsr04-ultrasonic-sensor
+
+    - name: 🗜 Zip binaries 
+      run: |
+        zip -r --junk-paths water-tank-sensor.0.0.${{ github.run_number }}.zip ./sketch/build/esp8266.esp8266.nodemcuv2
+
+    - name: 🐙 Install Octopus CLI
+      uses: OctopusDeploy/install-octopus-cli-action@v1.1.8
+      with:
+        version: latest
+      
+    - name: 🐙 Push a package to Octopus Deploy
+      uses: OctopusDeploy/push-package-action@v1.1.1
+      with:
+        api_key: ${{ secrets.OCTOPUS_API_KEY }}
+        packages: water-tank-sensor.0.0.${{ github.run_number }}.zip
+        server: ${{ secrets.OCTOPUS_SERVER }}
+
+    - name: 🐙 Create a release in Octopus Deploy
+      uses: OctopusDeploy/create-release-action@v1.1.1
+      with:
+        api_key: ${{ secrets.OCTOPUS_API_KEY }}
+        project: 'Water Tank Sensor'
+        server: ${{ secrets.OCTOPUS_SERVER }}
+        release_number: 0.0.${{ github.run_number }}
