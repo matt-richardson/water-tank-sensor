@@ -71,4 +71,4 @@ jobs:
         project: 'Water Tank Sensor'
         server: ${{ secrets.OCTOPUS_SERVER }}
         release_number: 0.0.${{ github.run_number }}
-        pacakges: water-tank-sensor:0.0.${{ github.run_number }}
+        packages: water-tank-sensor:0.0.${{ github.run_number }}
