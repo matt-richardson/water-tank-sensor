@@ -1,39 +1,34 @@
-step "Run a Script" {
-
-    action {
-        action_type = "Octopus.Script"
-        properties = {
-            Octopus.Action.RunOnServer = "true"
-            Octopus.Action.Script.ScriptBody = "echo \"Do the thing\""
-            Octopus.Action.Script.ScriptSource = "Inline"
-            Octopus.Action.Script.Syntax = "Bash"
-        }
-        worker_pool = "Hosted Linux Workers"
-    }
-}
-
-step "Deploy a Package" {
+step "Deploy package to arduino-updater staging folder" {
     properties = {
         Octopus.Action.TargetRoles = "nas"
     }
 
     action {
-        action_type = "Octopus.TentaclePackage"
+        action_type = "Octopus.Script"
         properties = {
-            Octopus.Action.EnabledFeatures = ",Octopus.Features.ConfigurationTransforms,Octopus.Features.ConfigurationVariables"
-            Octopus.Action.Package.AutomaticallyRunConfigurationTransformationFiles = "False"
-            Octopus.Action.Package.AutomaticallyUpdateAppSettingsAndConnectionStrings = "False"
-            Octopus.Action.Package.DownloadOnTentacle = "False"
-            Octopus.Action.Package.FeedId = "Octopus Server (built-in)"
-            Octopus.Action.Package.PackageId = "water-tank-sensor"
+            Octopus.Action.RunOnServer = "false"
+            Octopus.Action.Script.ScriptBody = <<-EOT
+                mkdir -p /etc/octopus/tmp
+                cp water-tank-sensor/sketch.ino.bin /etc/octopus/tmp/water-tank-sensor.#{Octopus.Action.Package[water-tank-sensor].PackageVersion}.bin
+                
+                docker run \
+                  --rm \
+                  -v /volume1/docker/tentacle:/docker/tentacle \
+                  -v /volume1/docker/arduino-updater:/docker/arduino-updater \
+                  alpine:latest \
+                  cp /docker/tentacle/tmp/water-tank-sensor.#{Octopus.Action.Package[water-tank-sensor].PackageVersion}.bin /docker/arduino-updater/packages
+            EOT
+            Octopus.Action.Script.ScriptSource = "Inline"
+            Octopus.Action.Script.Syntax = "Bash"
         }
-        worker_pool_variable = ""
 
-        packages {
+        packages "water-tank-sensor" {
             acquisition_location = "Server"
             feed = "Octopus Server (built-in)"
             package_id = "water-tank-sensor"
             properties = {
+                Extract = "True"
+                Purpose = ""
                 SelectionMode = "immediate"
             }
         }
