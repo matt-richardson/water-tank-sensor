@@ -1,9 +1,12 @@
 step "Run a Script" {
+    properties = {
+        Octopus.Action.TargetRoles = "nas"
+    }
 
     action {
         action_type = "Octopus.Script"
         properties = {
-            Octopus.Action.RunOnServer = "true"
+            Octopus.Action.RunOnServer = "false"
             Octopus.Action.Script.ScriptBody = <<-EOT
                 ls -alR
                 
@@ -14,13 +17,12 @@ step "Run a Script" {
                   --rm \
                   -v /docker/tentacle:/docker/tentacle \
                   -v /docker/arduino-updater:/docker/arduino-updater \
-                  alipine:latest \
+                  alpine:latest \
                   cp /docker/tentacle/tmp/water-tank-sensor.#{Octopus.Action.Package[water-tank-sensor].PackageVersion}.bin /docker/arduino-updater/packages
             EOT
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "Bash"
         }
-        worker_pool = "Hosted Linux Workers"
 
         packages "water-tank-sensor" {
             acquisition_location = "Server"
