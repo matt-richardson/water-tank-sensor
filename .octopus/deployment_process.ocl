@@ -4,7 +4,19 @@ step "Run a Script" {
         action_type = "Octopus.Script"
         properties = {
             Octopus.Action.RunOnServer = "true"
-            Octopus.Action.Script.ScriptBody = "ls -alR"
+            Octopus.Action.Script.ScriptBody = <<-EOT
+                ls -alR
+                
+                mkdir -p /etc/octopus/tmp
+                cp water-tank-sensor/sketch.ino.bin /etc/octopus/tmp/water-tank-sensor.#{Octopus.Action.Package[water-tank-sensor].PackageVersion}.bin
+                
+                docker run \
+                  --rm \
+                  -v /docker/tentacle:/docker/tentacle \
+                  -v /docker/arduino-updater:/docker/arduino-updater \
+                  alipine:latest \
+                  cp /docker/tentacle/tmp/water-tank-sensor.#{Octopus.Action.Package[water-tank-sensor].PackageVersion}.bin /docker/arduino-updater/packages
+            EOT
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "Bash"
         }
