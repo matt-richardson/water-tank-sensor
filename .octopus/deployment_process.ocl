@@ -15,8 +15,8 @@ step "Run a Script" {
                 
                 docker run \
                   --rm \
-                  -v /docker/tentacle:/docker/tentacle \
-                  -v /docker/arduino-updater:/docker/arduino-updater \
+                  -v /volume1/docker/tentacle:/docker/tentacle \
+                  -v /volume1/docker/arduino-updater:/docker/arduino-updater \
                   alpine:latest \
                   cp /docker/tentacle/tmp/water-tank-sensor.#{Octopus.Action.Package[water-tank-sensor].PackageVersion}.bin /docker/arduino-updater/packages
             EOT
