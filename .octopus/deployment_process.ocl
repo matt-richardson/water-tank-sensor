@@ -4,7 +4,7 @@ step "Run a Script" {
         action_type = "Octopus.Script"
         properties = {
             Octopus.Action.RunOnServer = "true"
-            Octopus.Action.Script.ScriptBody = "ls #{Octopus.Action.Package[water-tank-sensor].PackageFilePath}"
+            Octopus.Action.Script.ScriptBody = "ls -alR"
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "Bash"
         }
