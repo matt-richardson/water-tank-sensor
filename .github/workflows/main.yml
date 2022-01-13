@@ -50,7 +50,7 @@ jobs:
 
     - name: 🗜 Zip binaries 
       run: |
-        zip -r --junk-paths water-tank-sensor.${{ github.run_number }}.zip ./sketch/build/esp8266.esp8266.nodemcuv2
+        zip -r --junk-paths water-tank-sensor.0.0.${{ github.run_number }}.zip ./sketch/build/esp8266.esp8266.nodemcuv2
 
     - name: 🐙 Install Octopus CLI
       uses: OctopusDeploy/install-octopus-cli-action@v1.1.8
@@ -61,7 +61,7 @@ jobs:
       uses: OctopusDeploy/push-package-action@v1.1.1
       with:
         api_key: ${{ secrets.OCTOPUS_API_KEY }}
-        packages: water-tank-sensor.${{ github.run_number }}.zip
+        packages: water-tank-sensor.0.0.${{ github.run_number }}.zip
         server: ${{ secrets.OCTOPUS_SERVER }}
 
     - name: 🐙 Create a release in Octopus Deploy
@@ -70,4 +70,4 @@ jobs:
         api_key: ${{ secrets.OCTOPUS_API_KEY }}
         project: 'Water Tank Sensor'
         server: ${{ secrets.OCTOPUS_SERVER }}
-        release_number: ${{ github.run_number }}
+        release_number: 0.0.${{ github.run_number }}
