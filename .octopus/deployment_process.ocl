@@ -1,4 +1,4 @@
-step "Run a Script" {
+step "Deploy package to arduino-updater staging folder" {
     properties = {
         Octopus.Action.TargetRoles = "nas"
     }
@@ -8,8 +8,6 @@ step "Run a Script" {
         properties = {
             Octopus.Action.RunOnServer = "false"
             Octopus.Action.Script.ScriptBody = <<-EOT
-                ls -alR
-                
                 mkdir -p /etc/octopus/tmp
                 cp water-tank-sensor/sketch.ino.bin /etc/octopus/tmp/water-tank-sensor.#{Octopus.Action.Package[water-tank-sensor].PackageVersion}.bin
                 
