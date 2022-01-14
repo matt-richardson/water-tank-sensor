@@ -21,10 +21,6 @@ jobs:
       with:
         fetch-depth: 0
     
-    - name: Extract branch name
-      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-      id: extract_branch
-
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
@@ -43,7 +39,7 @@ jobs:
       shell: bash
       run: |
         export OCTOVERSION_Patch=$GITHUB_RUN_NUMBER
-        dotnet tool run octoversion --CurrentBranch=${{steps.extract_branch.outputs.branch}}
+        dotnet tool run octoversion --CurrentBranch=${{ github.head_ref || github.ref }} --Patch ${{ github.run_number }}
         echo $OCTOVERSION_FullSemVer
 
     - name: 🔐 Inject secrets
