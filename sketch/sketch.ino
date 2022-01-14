@@ -2,6 +2,7 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266HTTPClient.h>
 #include "config.h"
+#include "httpUpdate.h"
 
 HCSR04 hc(13, 12); // Initialize Pin D7, D6
 
@@ -81,7 +82,7 @@ void SendData(float averageReading)
 
   HTTPClient http;
   WiFiClientSecure wifiClient;
-  wifiClient.setInsecure();
+  wifiClient.setInsecure(); //todo: fix so it does proper validation
 
   http.begin(wifiClient, "https://io.adafruit.com/api/v2/" IO_USERNAME "/feeds/" IO_FEEDNAME "/data");
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -138,6 +139,9 @@ void setup()
   ConnectWifi();
   
   SendData(percentageFull);
+
+  CheckForUpdate();
+
   Serial.println("Going into deep sleep mode for 30 seconds");
   ESP.deepSleep( SLEEPTIME, WAKE_RF_DISABLED );
 }

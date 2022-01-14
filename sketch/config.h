@@ -16,4 +16,6 @@ const int SLEEPTIME = 30e7; //300 seconds
 #define OTA_USERNAME "${{ secrets.OTA_USERNAME }}"
 #define OTA_PASSWORD "${{ secrets.OTA_PASSWORD }}"
 
+#define VERSION_NUMBER "${{ github.VERSION_NUMBER }}"
+
 #endif
