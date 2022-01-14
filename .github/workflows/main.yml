@@ -21,11 +21,11 @@ jobs:
     
     - name: 🔐 Inject secrets
       run: |
-        perl -pi -e 's/\$\{\{ secrets.WLAN_SSID \}\}/"$ENV{WLAN_SSID}"/' sketch/sketch.ino
-        perl -pi -e 's/\$\{\{ secrets.WLAN_PASSWD \}\}/"$ENV{WLAN_PASSWD}"/' sketch/sketch.ino
-        perl -pi -e 's/\$\{\{ secrets.IO_USERNAME \}\}/"$ENV{IO_USERNAME}"/' sketch/sketch.ino
-        perl -pi -e 's/\$\{\{ secrets.IO_KEY \}\}/"$ENV{IO_KEY}"/' sketch/sketch.ino
-        perl -pi -e 's/\$\{\{ secrets.IO_FEEDNAME \}\}/"$ENV{IO_FEEDNAME}"/' sketch/sketch.ino
+        perl -pi -e 's/\$\{\{ secrets.WLAN_SSID \}\}/"$ENV{WLAN_SSID}"/' sketch/config.h
+        perl -pi -e 's/\$\{\{ secrets.WLAN_PASSWD \}\}/"$ENV{WLAN_PASSWD}"/' sketch/config.h
+        perl -pi -e 's/\$\{\{ secrets.IO_USERNAME \}\}/"$ENV{IO_USERNAME}"/' sketch/config.h
+        perl -pi -e 's/\$\{\{ secrets.IO_KEY \}\}/"$ENV{IO_KEY}"/' sketch/config.h
+        perl -pi -e 's/\$\{\{ secrets.IO_FEEDNAME \}\}/"$ENV{IO_FEEDNAME}"/' sketch/config.h
       env:
         WLAN_SSID: ${{ secrets.WLAN_SSID }}
         WLAN_PASSWD: ${{ secrets.WLAN_PASSWD }}
