@@ -20,30 +20,29 @@ jobs:
       uses: actions/checkout@v2
     
     - name: Extract branch name
-        shell: bash
-        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
-        id: extract_branch
+      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
 
     - name: Setup .NET
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: 6.0.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
 
-      - name: Install OctoVersion
-        run: |
-          dotnet new tool-manifest
-          dotnet tool install OctoVersion.Tool
-      - name: Install Octopus CLI
-        uses: OctopusDeploy/install-octopus-cli-action@v1.1.6
-        with:
-          version: latest
-      
-      - name: Calculate Version
-        shell: bash
-        run: |
-          export OCTOVERSION_Patch=$GITHUB_RUN_NUMBER
-          dotnet tool run octoversion --CurrentBranch=${{steps.extract_branch.outputs.branch}}
-          echo $OCTOVERSION_FullSemVer
+    - name: Install OctoVersion
+      run: |
+        dotnet new tool-manifest
+        dotnet tool install OctoVersion.Tool
+    - name: Install Octopus CLI
+      uses: OctopusDeploy/install-octopus-cli-action@v1.1.6
+      with:
+        version: latest
+    
+    - name: Calculate Version
+      shell: bash
+      run: |
+        export OCTOVERSION_Patch=$GITHUB_RUN_NUMBER
+        dotnet tool run octoversion --CurrentBranch=${{steps.extract_branch.outputs.branch}}
+        echo $OCTOVERSION_FullSemVer
 
     - name: 🔐 Inject secrets
       run: |
