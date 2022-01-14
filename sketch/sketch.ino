@@ -75,22 +75,6 @@ void ConnectWifi()
 }
 //--------------------------------------------------
 
-void OldConnectWifi()
-{
-  Serial.print("Connecting to ");
-  Serial.println(WLAN_SSID);
-
-  while (WiFi.status() != WL_CONNECTED)
-  {
-    delay(500);
-    Serial.print(".");
-  }
-
-  Serial.println("success!");
-  Serial.print("IP Address is: ");
-  Serial.println(WiFi.localIP());
-}
-
 void SendData(float averageReading)
 {
   Serial.println("Sending data to io.adafruit.com");
@@ -152,7 +136,7 @@ void setup()
   float percentageFull = (distanceFromBottomOfTank / 150) * 100;
 
   ConnectWifi();
-  //OldConnectWifi();
+  
   SendData(percentageFull);
   Serial.println("Going into deep sleep mode for 30 seconds");
   ESP.deepSleep( SLEEPTIME, WAKE_RF_DISABLED );
