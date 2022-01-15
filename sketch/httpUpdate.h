@@ -48,8 +48,8 @@ void CheckForUpdate() {
 
   WiFiClientSecure wifiClient;
   wifiClient.setInsecure(); //todo: fix so it does proper validation
-
-  t_httpUpdate_return ret = ESPhttpUpdate.update(wifiClient, "https://arduino-ota-updater.sybix9.com", VERSION_NUMBER);
+  ESPhttpUpdate.setAuthorization(OTA_USERNAME, OTA_PASSWORD);
+  t_httpUpdate_return ret = ESPhttpUpdate.update(wifiClient, OTA_ENDPOINT "/update", VERSION_NUMBER);
 
   switch (ret) {
       case HTTP_UPDATE_FAILED:
