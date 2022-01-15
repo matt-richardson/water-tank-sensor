@@ -48,16 +48,17 @@ jobs:
         perl -pi -e 's/\$\{\{ secrets.OTA_ENDPOINT \}\}/$ENV{OTA_ENDPOINT}/' sketch/config.h
         perl -pi -e 's/\$\{\{ secrets.OTA_USERNAME \}\}/$ENV{OTA_USERNAME}/' sketch/config.h
         perl -pi -e 's/\$\{\{ secrets.OTA_PASSWORD \}\}/$ENV{OTA_PASSWORD}/' sketch/config.h
-        perl -pi -e 's/\$\{\{ github.VERSION_NUMBER \}\}/${{ steps.calculate_version.outputs.octoversion_fullsemver }}/' sketch/config.h
+        perl -pi -e 's/\$\{\{ github.VERSION_NUMBER \}\}/$ENV{VERSION_NUMBER}/' sketch/config.h
       env:
         WLAN_SSID: ${{ secrets.WLAN_SSID }}
         WLAN_PASSWD: ${{ secrets.WLAN_PASSWD }}
         IO_USERNAME: ${{ secrets.IO_USERNAME }}
         IO_KEY: ${{ secrets.IO_KEY }}
         IO_FEEDNAME: ${{ secrets.IO_FEEDNAME }}
-        OTA_ENDPOINT: ${{ secrets.IO_FEEDNAME }}
+        OTA_ENDPOINT: ${{ secrets.OTA_ENDPOINT }}
         OTA_USERNAME: ${{ secrets.OTA_USERNAME }}
         OTA_PASSWORD: ${{ secrets.OTA_PASSWORD }}
+        VERSION_NUMBER: ${{ steps.calculate_version.outputs.octoversion_fullsemver }}
 
     # cant get this to work via the required-libraries
     - name: Get HCSR04 library 
