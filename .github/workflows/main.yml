@@ -18,7 +18,26 @@ jobs:
     steps:
     - name: Checkout 
       uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
     
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+
+    - name: Install OctoVersion
+      run: |
+        dotnet new tool-manifest
+        dotnet tool install OctoVersion.Tool
+     
+    - name: Calculate Version
+      id: calculate_version
+      shell: bash
+      run: |
+        dotnet tool run octoversion --CurrentBranch=${{ github.head_ref || github.ref }} --Patch ${{ github.run_number }} --DetectEnvironment true
+        echo $OCTOVERSION_FullSemVer
+
     - name: 🔐 Inject secrets
       run: |
         perl -pi -e 's/\$\{\{ secrets.WLAN_SSID \}\}/$ENV{WLAN_SSID}/' sketch/config.h
@@ -50,7 +69,7 @@ jobs:
 
     - name: 🗜 Zip binaries 
       run: |
-        zip -r --junk-paths water-tank-sensor.0.0.${{ github.run_number }}.zip ./sketch/build/esp8266.esp8266.nodemcuv2
+        zip -r --junk-paths water-tank-sensor.${{ steps.calculate_version.outputs.octoversion_fullsemver }}.zip ./sketch/build/esp8266.esp8266.nodemcuv2
 
     - name: 🐙 Install Octopus CLI
       uses: OctopusDeploy/install-octopus-cli-action@v1.1.8
@@ -61,7 +80,7 @@ jobs:
       uses: OctopusDeploy/push-package-action@v1.1.1
       with:
         api_key: ${{ secrets.OCTOPUS_API_KEY }}
-        packages: water-tank-sensor.0.0.${{ github.run_number }}.zip
+        packages: water-tank-sensor.${{ steps.calculate_version.outputs.octoversion_fullsemver }}.zip
         server: ${{ secrets.OCTOPUS_SERVER }}
 
     - name: 🐙 Create a release in Octopus Deploy
@@ -70,5 +89,5 @@ jobs:
         api_key: ${{ secrets.OCTOPUS_API_KEY }}
         project: 'Water Tank Sensor'
         server: ${{ secrets.OCTOPUS_SERVER }}
-        release_number: 0.0.${{ github.run_number }}
-        packages: water-tank-sensor:0.0.${{ github.run_number }}
+        release_number: ${{ steps.calculate_version.outputs.octoversion_fullsemver }}
+        packages: water-tank-sensor:${{ steps.calculate_version.outputs.octoversion_fullsemver }}
