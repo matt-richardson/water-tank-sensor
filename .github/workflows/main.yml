@@ -80,7 +80,7 @@ jobs:
       with:
         version: latest
       
-  - name: echo env vars DEBUG
+    - name: echo env vars DEBUG
       shell: bash
       run: |
         export
