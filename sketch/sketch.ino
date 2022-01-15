@@ -136,9 +136,12 @@ void setup()
   float percentageFull = (distanceFromBottomOfTank / 150) * 100;
 
   ConnectWifi();
-  
+
   SendData(percentageFull);
-  Serial.println("Going into deep sleep mode for 30 seconds");
+
+  Serial.print("Going into deep sleep mode for ");
+  Serial.print(SLEEPTIME);
+  Serial.println(" seconds");
   ESP.deepSleep( SLEEPTIME, WAKE_RF_DISABLED );
 }
 
