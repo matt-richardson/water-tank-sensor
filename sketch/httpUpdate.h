@@ -1,8 +1,7 @@
 /**
    httpUpdate.ino
-
-    Created on: 27.11.2015
-
+   Created on: 27.11.2015
+   Sourced from: https://github.com/esp8266/Arduino/blob/master/libraries/ESP8266httpUpdate/examples/httpUpdate/httpUpdate.ino
 */
 
 #include <Arduino.h>
