@@ -80,6 +80,11 @@ jobs:
       with:
         version: latest
       
+  - name: echo env vars DEBUG
+      shell: bash
+      run: |
+        export
+
     - name: 🐙 Push a package to Octopus Deploy
       uses: OctopusDeploy/push-package-action@v1.1.1
       with:
