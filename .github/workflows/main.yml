@@ -30,11 +30,7 @@ jobs:
       run: |
         dotnet new tool-manifest
         dotnet tool install OctoVersion.Tool
-    - name: Install Octopus CLI
-      uses: OctopusDeploy/install-octopus-cli-action@v1.1.6
-      with:
-        version: latest
-    
+     
     - name: Calculate Version
       id: calculate_version
       shell: bash
