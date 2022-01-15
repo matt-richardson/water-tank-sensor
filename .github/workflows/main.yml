@@ -45,6 +45,10 @@ jobs:
         perl -pi -e 's/\$\{\{ secrets.IO_USERNAME \}\}/$ENV{IO_USERNAME}/' sketch/config.h
         perl -pi -e 's/\$\{\{ secrets.IO_KEY \}\}/$ENV{IO_KEY}/' sketch/config.h
         perl -pi -e 's/\$\{\{ secrets.IO_FEEDNAME \}\}/$ENV{IO_FEEDNAME}/' sketch/config.h
+        perl -pi -e 's/\$\{\{ secrets.OTA_ENDPOINT \}\}/$ENV{OTA_ENDPOINT}/' sketch/config.h
+        perl -pi -e 's/\$\{\{ secrets.OTA_USERNAME \}\}/$ENV{OTA_USERNAME}/' sketch/config.h
+        perl -pi -e 's/\$\{\{ secrets.OTA_PASSWORD \}\}/$ENV{OTA_PASSWORD}/' sketch/config.h
+        perl -pi -e 's/\$\{\{ github.VERSION_NUMBER \}\}/${{ steps.calculate_version.outputs.octoversion_fullsemver }}/' sketch/config.h
       env:
         WLAN_SSID: ${{ secrets.WLAN_SSID }}
         WLAN_PASSWD: ${{ secrets.WLAN_PASSWD }}
