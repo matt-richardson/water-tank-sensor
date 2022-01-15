@@ -56,8 +56,8 @@ jobs:
         IO_KEY: ${{ secrets.IO_KEY }}
         IO_FEEDNAME: ${{ secrets.IO_FEEDNAME }}
         OTA_ENDPOINT: ${{ secrets.IO_FEEDNAME }}
-        OTA_USERNAME: ${{ secrets.IO_FEEDNAME }}
-        OTA_PASSWORD: ${{ secrets.IO_FEEDNAME }}
+        OTA_USERNAME: ${{ secrets.OTA_USERNAME }}
+        OTA_PASSWORD: ${{ secrets.OTA_PASSWORD }}
 
     # cant get this to work via the required-libraries
     - name: Get HCSR04 library 
