@@ -36,7 +36,7 @@ jobs:
       shell: bash
       run: |
         export OCTOVERSION_Patch=$GITHUB_RUN_NUMBER
-        dotnet tool run octoversion --CurrentBranch=${{ github.head_ref || github.ref }} --Patch ${{ github.run_number }}
+        dotnet tool run octoversion --CurrentBranch=${{ github.head_ref || github.ref }} --Patch ${{ github.run_number }} --DetectEnvironment
         echo $OCTOVERSION_FullSemVer
 
     - name: 🔐 Inject secrets
