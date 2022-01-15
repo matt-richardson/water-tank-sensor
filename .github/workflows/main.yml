@@ -36,6 +36,7 @@ jobs:
         version: latest
     
     - name: Calculate Version
+      id: calculate_version
       shell: bash
       run: |
         export OCTOVERSION_Patch=$GITHUB_RUN_NUMBER
@@ -73,23 +74,18 @@ jobs:
 
     - name: 🗜 Zip binaries 
       run: |
-        zip -r --junk-paths water-tank-sensor.${{ env.OCTOVERSION_FullSemVer }}.zip ./sketch/build/esp8266.esp8266.nodemcuv2
+        zip -r --junk-paths water-tank-sensor.${{ steps.calculate_version.outputs.octoversion_fullsemver }}.zip ./sketch/build/esp8266.esp8266.nodemcuv2
 
     - name: 🐙 Install Octopus CLI
       uses: OctopusDeploy/install-octopus-cli-action@v1.1.8
       with:
         version: latest
       
-    - name: echo env vars DEBUG
-      shell: bash
-      run: |
-        export
-
     - name: 🐙 Push a package to Octopus Deploy
       uses: OctopusDeploy/push-package-action@v1.1.1
       with:
         api_key: ${{ secrets.OCTOPUS_API_KEY }}
-        packages: water-tank-sensor.${{ env.OCTOVERSION_FullSemVer }}.zip
+        packages: water-tank-sensor.${{ steps.calculate_version.outputs.octoversion_fullsemver }}.zip
         server: ${{ secrets.OCTOPUS_SERVER }}
 
     - name: 🐙 Create a release in Octopus Deploy
@@ -98,5 +94,5 @@ jobs:
         api_key: ${{ secrets.OCTOPUS_API_KEY }}
         project: 'Water Tank Sensor'
         server: ${{ secrets.OCTOPUS_SERVER }}
-        release_number: ${{ env.OCTOVERSION_FullSemVer }}
-        packages: water-tank-sensor:${{ env.OCTOVERSION_FullSemVer }}
+        release_number: ${{ steps.calculate_version.outputs.octoversion_fullsemver }}
+        packages: water-tank-sensor:${{ steps.calculate_version.outputs.octoversion_fullsemver }}
