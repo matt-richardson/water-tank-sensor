@@ -145,7 +145,7 @@ void setup()
   Serial.println();
 
   log("WLAN_SSID: " WLAN_SSID);
-  log("SEQ_URL: " SET_URL);
+  log("SEQ_URL: " SEQ_URL);
   log("IO_USERNAME: " IO_USERNAME);
   log("IO_FEEDNAME: " IO_FEEDNAME);
   log("OTA_ENDPOINT: " OTA_ENDPOINT);
