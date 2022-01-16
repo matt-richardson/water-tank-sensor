@@ -123,8 +123,7 @@ void log(String message)
   http.begin(wifiClient, SEQ_URL "/api/events/raw");
   http.addHeader("Content-Type", "application/vnd.serilog.clef");
   http.addHeader("X-Seq-ApiKey", SEQ_API_KEY);
-  String postDataPrefix = "{\"@t\":\"";
-  String postData = postDataPrefix + dateTime(ISO8601) + "\", \"@m\": \"" + message + "\"}";
+  String postData = "{\"@t\":\"" + dateTime(ISO8601) + "\", \"@m\": \"" + message + "\"}";
   Serial.print("Sending data: ");
   Serial.println(postData);
   auto httpCode = http.POST(postData);
@@ -146,6 +145,7 @@ void setup()
   Serial.println();
 
   log("WLAN_SSID: " WLAN_SSID);
+  log("SEQ_URL: " SET_URL);
   log("IO_USERNAME: " IO_USERNAME);
   log("IO_FEEDNAME: " IO_FEEDNAME);
   log("OTA_ENDPOINT: " OTA_ENDPOINT);
