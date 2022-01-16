@@ -3,6 +3,7 @@
 #include <ESP8266HTTPClient.h>
 #include "config.h"
 #include "httpUpdate.h"
+#include <ezTime.h>
 
 HCSR04 hc(13, 12); // Initialize Pin D7, D6
 
@@ -112,38 +113,58 @@ float average (float * array, int len)
   return  ((float) sum) / nonZeroValues;
 }
 
+void log(String message)
+{
+  Serial.println(message);
+
+  HTTPClient http;
+  WiFiClientSecure wifiClient;
+  wifiClient.setInsecure(); //todo: fix so it does proper validation
+  http.begin(wifiClient, SEQ_URL "/api/events/raw");
+  http.addHeader("Content-Type", "application/vnd.serilog.clef");
+  http.addHeader("X-Seq-ApiKey", SEQ_API_KEY);
+  String postDataPrefix = "{\"@t\":\"";
+  String postData = postDataPrefix + dateTime(ISO8601) + "\", \"@m\": \"" + message + "\"}";
+  Serial.print("Sending data: ");
+  Serial.println(postData);
+  auto httpCode = http.POST(postData);
+  Serial.println(httpCode); //Print HTTP return code
+  String payload = http.getString();
+  Serial.println(payload); //Print request response payload
+  http.end(); //Close connection
+}
+
 void setup()
 {
   delay(1000);
   Serial.begin(115200);
 
-  Serial.println();
+  ConnectWifi();
 
-  Serial.println("Config:");
-  Serial.print("WLAN_SSID: ");
-  Serial.println(WLAN_SSID);
-  Serial.print("IO_USERNAME: ");
-  Serial.println(IO_USERNAME);
-  Serial.print("IO_FEEDNAME: ");
-  Serial.println(IO_FEEDNAME);
-  Serial.print("OTA_ENDPOINT: ");
-  Serial.println(OTA_ENDPOINT);
-  Serial.print("OTA_USERNAME: ");
-  Serial.println(OTA_USERNAME);
-  Serial.print("VERSION_NUMBER: ");
-  Serial.println(VERSION_NUMBER);
+	waitForSync(); //wait for ntp sync
 
   Serial.println();
+
+  log("WLAN_SSID: " WLAN_SSID);
+  log("IO_USERNAME: " IO_USERNAME);
+  log("IO_FEEDNAME: " IO_FEEDNAME);
+  log("OTA_ENDPOINT: " OTA_ENDPOINT);
+  log("OTA_USERNAME: " OTA_USERNAME);
+  log("VERSION_NUMBER: " VERSION_NUMBER);
+
+  Serial.println();
+
   float readings[10];
 
   for (int i = 0; i < 10; i++) {
     readings[i] = hc.dist();
-    Serial.println(readings[i]); // Print in centimeters the value from the sensor
+    char buffer[60];
+    sprintf(buffer, "Water level (reading %d) is %f cm from the sensor", i, readings[i]);
+    log(buffer); // Print in centimeters the value from the sensor
     delay(250);
   }
-  Serial.print("Average reading is ");
   float averageReading = average(readings, 10);
-  Serial.println(averageReading);
+  log("Average reading is " + String(averageReading));
 
   // tank sensor sits at 180cm
   // tank overflow is at 150cm
@@ -151,15 +172,10 @@ void setup()
   float distanceFromBottomOfTank = 180 - averageReading;
   float percentageFull = (distanceFromBottomOfTank / 150) * 100;
 
-  ConnectWifi();
-
   SendData(percentageFull);
 
   CheckForUpdate();
-
-  Serial.print("Going into deep sleep mode for ");
-  Serial.print(SLEEPTIME);
-  Serial.println(" seconds");
+  log("Going into deep sleep mode for " + SLEEPTIME + String(" microseconds"));
   ESP.deepSleep( SLEEPTIME, WAKE_RF_DISABLED );
 }
 

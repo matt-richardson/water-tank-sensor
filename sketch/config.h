@@ -6,6 +6,10 @@
 
 const int SLEEPTIME = 30e7; //300 seconds
 
+//seq logging
+#define SEQ_URL      "${{ secrets.SEQ_URL }}"
+#define SEQ_API_KEY  "${{ secrets.SEQ_API_KEY }}"
+
 //io.adafruit.com
 #define IO_USERNAME  "${{ secrets.IO_USERNAME }}"
 #define IO_KEY       "${{ secrets.IO_KEY }}"
