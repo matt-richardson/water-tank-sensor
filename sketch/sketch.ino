@@ -166,11 +166,8 @@ void setup()
   float averageReading = average(readings, 10);
   log("Average reading is " + String(averageReading));
 
-  // tank sensor sits at 180cm
-  // tank overflow is at 150cm
-
-  float distanceFromBottomOfTank = 180 - averageReading;
-  float percentageFull = (distanceFromBottomOfTank / 150) * 100;
+  float distanceFromBottomOfTank = TANK_SENSOR_HEIGHT_IN_CM - averageReading;
+  float percentageFull = (distanceFromBottomOfTank / TANK_OVERFLOW_HEIGHT_IN_CM) * 100;
 
   SendData(percentageFull);
 

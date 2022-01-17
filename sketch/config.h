@@ -5,6 +5,8 @@
 #define WLAN_PASSWD "${{ secrets.WLAN_PASSWD }}"
 
 const int SLEEPTIME = 30e7; //300 seconds
+const int TANK_SENSOR_HEIGHT_IN_CM = 180;
+const int TANK_OVERFLOW_HEIGHT_IN_CM = 150;
 
 //seq logging
 #define SEQ_URL      "${{ secrets.SEQ_URL }}"
