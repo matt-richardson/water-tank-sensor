@@ -42,6 +42,8 @@ jobs:
       run: |
         perl -pi -e 's/\$\{\{ secrets.WLAN_SSID \}\}/$ENV{WLAN_SSID}/' sketch/config.h
         perl -pi -e 's/\$\{\{ secrets.WLAN_PASSWD \}\}/$ENV{WLAN_PASSWD}/' sketch/config.h
+        perl -pi -e 's/\$\{\{ secrets.SEQ_URL \}\}/$ENV{SEQ_URL}/' sketch/config.h
+        perl -pi -e 's/\$\{\{ secrets.SEQ_API_KEY \}\}/$ENV{SEQ_API_KEY}/' sketch/config.h
         perl -pi -e 's/\$\{\{ secrets.IO_USERNAME \}\}/$ENV{IO_USERNAME}/' sketch/config.h
         perl -pi -e 's/\$\{\{ secrets.IO_KEY \}\}/$ENV{IO_KEY}/' sketch/config.h
         perl -pi -e 's/\$\{\{ secrets.IO_FEEDNAME \}\}/$ENV{IO_FEEDNAME}/' sketch/config.h
@@ -52,6 +54,8 @@ jobs:
       env:
         WLAN_SSID: ${{ secrets.WLAN_SSID }}
         WLAN_PASSWD: ${{ secrets.WLAN_PASSWD }}
+        SEQ_URL: ${{ secrets.SEQ_URL }}
+        SEQ_API_KEY: ${{ secrets.SEQ_API_KEY }}
         IO_USERNAME: ${{ secrets.IO_USERNAME }}
         IO_KEY: ${{ secrets.IO_KEY }}
         IO_FEEDNAME: ${{ secrets.IO_FEEDNAME }}
@@ -68,12 +72,18 @@ jobs:
         ref: master
         path: CustomHCSR04 # must contain string "Custom"
 
+    - name: Get ezTime library 
+      uses: actions/checkout@v2
+      with:
+        repository: ropg/ezTime
+        ref: master
+        path: CustomEzTime # must contain string "Custom"
+
     - name: Compile 
       uses: ArminJo/arduino-test-compile@v3
       with:
         arduino-board-fqbn: esp8266:esp8266:nodemcuv2:eesz=4M3M,xtal=80
         platform-url: https://arduino.esp8266.com/stable/package_esp8266com_index.json
-        #required-libraries: hcsr04-ultrasonic-sensor
 
     - name: 🗜 Zip binaries 
       run: |
