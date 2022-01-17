@@ -123,7 +123,7 @@ void log(String message)
   http.begin(wifiClient, SEQ_URL "/api/events/raw");
   http.addHeader("Content-Type", "application/vnd.serilog.clef");
   http.addHeader("X-Seq-ApiKey", SEQ_API_KEY);
-  String postData = "{\"@t\":\"" + dateTime(ISO8601) + "\", \"@m\": \"" + message + "\"}";
+  String postData = "{\"@t\":\"" + dateTime(ISO8601) + "\", \"@m\": \"" + message + "\", \"Application\": \"WaterTankSensor\", \"Environment\": \"Production\", \"Version\", \"" + VERSION_NUMBER + "\"}";
   Serial.print("Sending data: ");
   Serial.println(postData);
   auto httpCode = http.POST(postData);
