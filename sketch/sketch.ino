@@ -126,7 +126,7 @@ void log(String message, String messageTemplate = "", String value1Name = "", St
       http.addHeader("X-Seq-ApiKey", SEQ_API_KEY);
       String postData = String("{") +
                         "\"@t\":\"" + dateTime(ISO8601) + "\"," +
-                        "\"@m\": \"" + message + "\"," +
+                        "\"@mt\": \"" + messageTemplate + "\"," +
                         "\"Application\": \"WaterTankSensor\"," +
                         "\"Environment\": \"Production\"," +
                         "\"Version\": \"" + VERSION_NUMBER + "\"";
