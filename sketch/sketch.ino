@@ -182,6 +182,8 @@ void setup()
   float distanceFromBottomOfTank = TANK_SENSOR_HEIGHT_IN_CM - averageReading;
   float percentageFull = (distanceFromBottomOfTank / TANK_OVERFLOW_HEIGHT_IN_CM) * 100;
 
+  log("Tank is " + String(percentageFull) + String("% full"), "Tank is {PercentFull}% full", "PercentFull", String(percentageFull));
+
   SendData(percentageFull);
 
   CheckForUpdate();
