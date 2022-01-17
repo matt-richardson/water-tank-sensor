@@ -175,7 +175,7 @@ void setup()
   SendData(percentageFull);
 
   CheckForUpdate();
-  log("Going into deep sleep mode for " + SLEEPTIME + String(" microseconds"));
+  log("Going into deep sleep mode for " + String(SLEEPTIME / 1000000) + String(" seconds"));
   ESP.deepSleep( SLEEPTIME, WAKE_RF_DISABLED );
 }
 
