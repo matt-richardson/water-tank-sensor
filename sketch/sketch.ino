@@ -19,10 +19,10 @@ void SendData(float averageReading)
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
   http.addHeader("X-AIO-Key", IO_KEY);
   String postDataPrefix = "value=";
-  String postData = postDataPrefix + averageReading;
+  String postData = postDataPrefix + String(averageReading);
   Serial.print("Sending data: ");
   Serial.println(postData);
-  auto httpCode = http.POST(postData);
+  int httpCode = http.POST(postData);
   Serial.println(httpCode); //Print HTTP return code
   String payload = http.getString();
   Serial.println(payload); //Print request response payload
