@@ -28,7 +28,7 @@ void log(String message, String messageTemplate = "", String value1Name = "", St
       postData = postData + "}";
       Serial.print("Sending data: ");
       Serial.println(postData);
-      auto httpCode = http.POST(postData);
+      int httpCode = http.POST(postData);
       Serial.println(httpCode); //Print HTTP return code
       String payload = http.getString();
       Serial.println(payload); //Print request response payload
