@@ -9,22 +9,22 @@ void log(String message, String messageTemplate = "", String value1Name = "", St
 {
   Serial.println(message);
 
-  if (messageTemplate != "") {
-      
-      String postData = String("{") +
-                        "\"@t\":\"" + dateTime(ISO8601) + "\"," +
-                        "\"@mt\": \"" + messageTemplate + "\"," +
-                        "\"Application\": \"WaterTankSensor\"," +
-                        "\"Environment\": \"Production\"," +
-                        "\"Version\": \"" + VERSION_NUMBER + "\"";
-      if (value1Name != "")
-          postData = postData + ",\"" + value1Name + "\": \"" + value1 + "\"";
-      if (value1Name != "")
-          postData = postData + ",\"" + value2Name + "\": \"" + value2 + "\"";
-      postData = postData + "}";
-      logs[numLogs] = postData;
-      numLogs++;
-  }
+  String postData = "{";
+  postData = postData + "\"@t\":\"" + dateTime(ISO8601) + "\",";
+  if (messageTemplate != "")
+    postData = postData + "\"@mt\": \"" + messageTemplate + "\",";
+  else 
+    postData = postData + "\"@m\": \"" + message + "\",";
+  postData = postData + "\"Application\": \"WaterTankSensor\",";
+  postData = postData + "\"Environment\": \"Production\",";
+  postData = postData + "\"Version\": \"" + VERSION_NUMBER + "\"";
+  if (value1Name != "")
+    postData = postData + ",\"" + value1Name + "\": \"" + value1 + "\"";
+  if (value1Name != "")
+    postData = postData + ",\"" + value2Name + "\": \"" + value2 + "\"";
+  postData = postData + "}";
+  logs[numLogs] = postData;
+  numLogs++;
 }
 
 void flushLogs()
