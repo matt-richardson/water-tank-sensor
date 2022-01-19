@@ -38,7 +38,7 @@ void flushLogs()
 
   String postData = "";
   for (int i=0; i < numLogs; i++)
-    postData = postData + logs[i];
+    postData = postData + logs[i] + "\n";
 
   Serial.print("Sending data: ");
   Serial.println(postData);
