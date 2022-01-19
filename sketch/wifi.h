@@ -11,11 +11,9 @@ struct {
   uint8_t padding;  // 1 byte,  12 in total
 } rtcData;
 
-//todo: log the wifi startup to seq
 void ConnectWifi()
 {
-  Serial.print("Connecting to ");
-  Serial.println(WLAN_SSID);
+  log("Connecting to " + String(WLAN_SSID), "Connecting to {SSID}", "SSID", WLAN_SSID);
   // Try to read WiFi settings from RTC memory
   bool rtcValid = false;
   if( ESP.rtcUserMemoryRead( 0, (uint32_t*)&rtcData, sizeof( rtcData ) ) ) {
@@ -23,11 +21,11 @@ void ConnectWifi()
   }
 
   if( rtcValid ) {
-    Serial.println("The RTC data was good, making a quick connection");
+    log("The RTC data was good, making a quick connection");
     WiFi.begin( WLAN_SSID, WLAN_PASSWD, rtcData.channel, rtcData.bssid, true );
   }
   else {
-    Serial.println("The RTC data was not valid, so make a regular connection");
+    log("The RTC data was not valid, so make a regular connection");
     WiFi.begin( WLAN_SSID, WLAN_PASSWD );
   }
 
@@ -37,7 +35,7 @@ void ConnectWifi()
     Serial.print(".");
     retries++;
     if( retries == 100 ) {
-      Serial.println("Quick connect didn't work, resetting wifi and trying regular connection");
+      log("Quick connect didn't work, resetting wifi and trying regular connection");
       WiFi.disconnect();
       delay( 10 );
       WiFi.forceSleepBegin();
@@ -47,7 +45,7 @@ void ConnectWifi()
       WiFi.begin( WLAN_SSID, WLAN_PASSWD );
     }
     if( retries == 600 ) {
-      Serial.println("Giving up after 30 seconds and going back to sleep");
+      log("Giving up after 30 seconds and going back to sleep");
       WiFi.disconnect( true );
       delay( 1 );
       WiFi.mode( WIFI_OFF );
@@ -58,9 +56,9 @@ void ConnectWifi()
     wifiStatus = WiFi.status();
   }
 
-  Serial.println("success!");
-  Serial.print("IP Address is: ");
-  Serial.println(WiFi.localIP());
+  log("Successfully connected to wifi!");
+  String ipAddress = WiFi.localIP().toString();
+  log("IP address is " + ipAddress, "IP Address is {IPAddress}", "IPAddress", ipAddress);
 
   // Write current connection info back to RTC
   rtcData.channel = WiFi.channel();
