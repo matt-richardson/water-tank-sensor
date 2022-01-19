@@ -82,7 +82,8 @@ void setup()
   log("Tank is " + String(percentageFull) + String("% full"), "Tank is {PercentFull}% full", "PercentFull", String(percentageFull));
 
   SendData(percentageFull);
-
+  flushLogs();
+  
   CheckForUpdate();
   log("Going into deep sleep mode for " + String(SLEEPTIME / 1000000) + String(" seconds"), "Going into deep sleep mode for {SleepTime} seconds", "SleepTime", String(SLEEPTIME / 1000000));
   ESP.deepSleep( SLEEPTIME, WAKE_RF_DISABLED );
