@@ -16,7 +16,7 @@ void log(String message, String messageTemplate = "", String value1Name = "", St
   if (messageTemplate != "")
     postData = postData + ",\"@mt\": \"" + messageTemplate + "\"";
   else 
-    postData = postData + ",\"@m\": \"" + message + "\"";
+    postData = postData + ",\"@mt\": \"" + message + "\"";
   postData = postData + ",\"Application\": \"WaterTankSensor\"";
   postData = postData + ",\"Environment\": \"Production\"";
   postData = postData + ",\"Version\": \"" + VERSION_NUMBER + "\"";
