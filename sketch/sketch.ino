@@ -69,7 +69,7 @@ void setup()
     readings[i] = hc.dist();
     char buffer[60];
     sprintf(buffer, "Water level (reading %d) is %f cm from the sensor", i, readings[i]);
-    log(buffer, "Water level (reading {ReadingNumber}) is {ReadingValue} cm from the sensor", "ReadingNumber", String(i), "ReadingValue", String(readings[i])); // Print in centimeters the value from the sensor
+    log(buffer, "Water level (reading {ReadingNumber}) is {ReadingValue} cm from the sensor", "ReadingNumber", String(i), "ReadingValue", String(readings[i]));
     delay(250);
   }
   float averageReading = average(readings, 10);
