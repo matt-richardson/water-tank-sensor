@@ -37,9 +37,11 @@ float average (float * array, int len)
   {
     if (array[i] > 0) {
       nonZeroValues++;
-      sum += array [i] ;
+      sum += array [i];
     }
   }
+  if (nonZeroValues == 0)
+    return -1;
   return  ((float) sum) / nonZeroValues;
 }
 
@@ -79,7 +81,10 @@ void setup()
 
   log("Tank is " + String(percentageFull) + String("% full"), "Tank is {PercentFull}% full", "PercentFull", String(percentageFull));
 
-  SendData(percentageFull);
+  if (percentageFull < 0)
+    log("Value is less than 0. Not going to publish the data.");
+  else
+    SendData(percentageFull);
   flushLogs();
 
   CheckForUpdate();
