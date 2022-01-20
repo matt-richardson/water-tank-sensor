@@ -41,6 +41,7 @@ void flushLogs()
   waitForSync();
   log("NTP sync complete. Time is " + dateTime(ISO8601), "NTP sync complete. Time is {Time}.", "Time", dateTime(ISO8601));
   unsigned long millisecondsSinceBoot = millis();
+  log("It has been " + String(millisecondsSinceBoot) + " milliseconds since boot", "It has been {MillisecondsSinceBoot} milliseconds since boot", "MillisecondsSinceBoot", String(millisecondsSinceBoot));
 
   HTTPClient http;
   WiFiClientSecure wifiClient;
