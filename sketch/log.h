@@ -2,17 +2,23 @@
 #define log_h
 
 #include <ezTime.h>
+#include <config.h>
+#include <ESP8266HTTPClient.h>
 
 const unsigned MAX_LOGS = 50;
 String logs[MAX_LOGS];
+unsigned long logTime[MAX_LOGS];
 unsigned int numLogs = 0;
 
 void log(String message, String messageTemplate = "", String value1Name = "", String value1 = "", String value2Name = "", String value2 = "")
 {
   Serial.println(message);
+  logTime[numLogs] = millis();
 
-  String postData = "{";
-  postData = postData + "\"@t\":\"" + dateTime(ISO8601) + "\"";
+  //these are not valid json strings - they need modification before publishing
+  //we dont always have a valid time (ie, before we have connected to wifi, and we haven't done an ntp sync)
+  //so we cant add a valid time to it yet - we do that when we publish the message. 
+  String postData = "";
   if (messageTemplate != "")
     postData = postData + ",\"@mt\": \"" + messageTemplate + "\"";
   else 
@@ -25,13 +31,17 @@ void log(String message, String messageTemplate = "", String value1Name = "", St
     postData = postData + ",\"" + value1Name + "\": \"" + value1 + "\"";
   if (value2Name != "")
     postData = postData + ",\"" + value2Name + "\": \"" + value2 + "\"";
-  postData = postData + "}";
   logs[numLogs] = postData;
   numLogs++;
 }
 
 void flushLogs()
 {
+  log("Waiting for NTP sync");
+  waitForSync();
+  log("NTP sync complete. Time is " + dateTime(ISO8601), "NTP sync complete. Time is {Time}.", "Time", dateTime(ISO8601));
+  unsigned long millisecondsSinceBoot = millis();
+
   HTTPClient http;
   WiFiClientSecure wifiClient;
   wifiClient.setInsecure(); //todo: fix so it does proper validation
@@ -40,17 +50,19 @@ void flushLogs()
   http.addHeader("X-Seq-ApiKey", SEQ_API_KEY);
 
   String postData = "";
-  for (int i=0; i < numLogs; i++)
-    postData = postData + logs[i] + "\n";
+  for (int i=0; i < numLogs; i++) {
+    time_t messageTime = TIME_NOW - millisecondsSinceBoot + logTime[i];
+    postData = postData + "{" + "\"@t\":\"" + dateTime(messageTime, ISO8601) + "\"" + logs[i] + "}\n";
+  }
 
   Serial.print("Sending data: ");
   Serial.println(postData);
 
   int httpCode = http.POST(postData);
-  Serial.println(httpCode); //Print HTTP return code
+  Serial.println("Seq return http code " + String(httpCode));
   String payload = http.getString();
-  Serial.println(payload); //Print request response payload
-  http.end(); //Close connection
+  Serial.println("Seq returned: " + payload); 
+  http.end();
 }
 
 #endif

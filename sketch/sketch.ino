@@ -50,8 +50,6 @@ void setup()
 
   ConnectWifi();
 
-  waitForSync(); //wait for ntp sync
-
   Serial.println();
 
   log("WLAN_SSID: " WLAN_SSID, "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "WLAN_SSID", "ConfigValue", WLAN_SSID);
