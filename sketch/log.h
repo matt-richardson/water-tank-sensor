@@ -51,9 +51,10 @@ void flushLogs()
   http.addHeader("X-Seq-ApiKey", SEQ_API_KEY);
 
   String postData = "";
+  unsigned long timeNow = now();
   for (int i=0; i < numLogs; i++) {
-    Serial.println("TIME_NOW is " + String(TIME_NOW) + ". logTime[" + String(i) + "] is " + String(logTime[i]));
-    time_t messageTime = TIME_NOW - millisecondsSinceBoot + logTime[i];
+    Serial.println("timeNow is " + String(timeNow) + ". logTime[" + String(i) + "] is " + String(logTime[i]));
+    time_t messageTime = timeNow - millisecondsSinceBoot + logTime[i];
     postData = postData + "{" + "\"@t\":\"" + dateTime(messageTime, ISO8601) + "\"" + logs[i] + "}\n";
   }
 
