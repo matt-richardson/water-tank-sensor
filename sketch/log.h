@@ -1,9 +1,11 @@
+#ifndef log_h
+#define log_h
 
 #include <ezTime.h>
 
 const unsigned MAX_LOGS = 50;
 String logs[MAX_LOGS];
-unsigned numLogs = 0;
+unsigned int numLogs = 0;
 
 void log(String message, String messageTemplate = "", String value1Name = "", String value1 = "", String value2Name = "", String value2 = "")
 {
@@ -18,6 +20,7 @@ void log(String message, String messageTemplate = "", String value1Name = "", St
   postData = postData + "\"Application\": \"WaterTankSensor\",";
   postData = postData + "\"Environment\": \"Production\",";
   postData = postData + "\"Version\": \"" + VERSION_NUMBER + "\"";
+  postData = postData + "\"LogNumber\": \"" + String(numLogs) + "\"";
   if (value1Name != "")
     postData = postData + ",\"" + value1Name + "\": \"" + value1 + "\"";
   if (value1Name != "")
@@ -49,3 +52,5 @@ void flushLogs()
   Serial.println(payload); //Print request response payload
   http.end(); //Close connection
 }
+
+#endif
