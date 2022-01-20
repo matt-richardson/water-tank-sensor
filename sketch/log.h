@@ -54,7 +54,7 @@ void flushLogs()
   unsigned long timeNow = now();
   for (int i=0; i < numLogs; i++) {
     Serial.println("timeNow is " + String(timeNow) + ". logTime[" + String(i) + "] is " + String(logTime[i]));
-    time_t messageTime = timeNow - ((millisecondsSinceBoot + logTime[i]) / 1000);
+    time_t messageTime = timeNow - (millisecondsSinceBoot / 1000) + (logTime[i] / 1000);
     postData = postData + "{" + "\"@t\":\"" + dateTime(messageTime, ISO8601) + "\"" + logs[i] + "}\n";
   }
 
