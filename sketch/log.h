@@ -23,7 +23,7 @@ void log(String message, String messageTemplate = "", String value1Name = "", St
   postData = postData + ",\"LogNumber\": \"" + String(numLogs) + "\"";
   if (value1Name != "")
     postData = postData + ",\"" + value1Name + "\": \"" + value1 + "\"";
-  if (value1Name != "")
+  if (value2Name != "")
     postData = postData + ",\"" + value2Name + "\": \"" + value2 + "\"";
   postData = postData + "}";
   logs[numLogs] = postData;
