@@ -39,9 +39,11 @@ void flushLogs()
 {
   log("Waiting for NTP sync");
   waitForSync();
-  log("NTP sync complete. Time is " + dateTime(ISO8601), "NTP sync complete. Time is {Time}.", "Time", dateTime(ISO8601));
   unsigned long millisecondsSinceBoot = millis();
-  log("It has been " + String(millisecondsSinceBoot) + " milliseconds since boot", "It has been {MillisecondsSinceBoot} milliseconds since boot", "MillisecondsSinceBoot", String(millisecondsSinceBoot));
+  log("NTP sync complete. Time is " + dateTime(ISO8601) + ". It has been " + String(millisecondsSinceBoot) + " milliseconds since boot", 
+      "NTP sync complete. Time is {Time}. It has been {MillisecondsSinceBoot} milliseconds since boot", 
+      "Time", dateTime(ISO8601), 
+      "MillisecondsSinceBoot", String(millisecondsSinceBoot));
 
   HTTPClient http;
   WiFiClientSecure wifiClient;
@@ -53,7 +55,6 @@ void flushLogs()
   String postData = "";
   unsigned long timeNow = now();
   for (int i=0; i < numLogs; i++) {
-    Serial.println("timeNow is " + String(timeNow) + ". logTime[" + String(i) + "] is " + String(logTime[i]));
     time_t messageTime = timeNow - (millisecondsSinceBoot / 1000) + (logTime[i] / 1000);
     postData = postData + "{" + "\"@t\":\"" + dateTime(messageTime, ISO8601) + "\"" + logs[i] + "}\n";
   }
