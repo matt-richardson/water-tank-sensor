@@ -2,7 +2,6 @@
 #include <ESP8266HTTPClient.h>
 #include "config.h"
 #include "httpUpdate.h"
-#include "log.h"
 #include "wifi.h"
 
 HCSR04 hc(13, 12); // Initialize Pin D7, D6
