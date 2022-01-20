@@ -12,15 +12,15 @@ void log(String message, String messageTemplate = "", String value1Name = "", St
   Serial.println(message);
 
   String postData = "{";
-  postData = postData + "\"@t\":\"" + dateTime(ISO8601) + "\",";
+  postData = postData + "\"@t\":\"" + dateTime(ISO8601) + "\"";
   if (messageTemplate != "")
-    postData = postData + "\"@mt\": \"" + messageTemplate + "\",";
+    postData = postData + ",\"@mt\": \"" + messageTemplate + "\"";
   else 
-    postData = postData + "\"@m\": \"" + message + "\",";
-  postData = postData + "\"Application\": \"WaterTankSensor\",";
-  postData = postData + "\"Environment\": \"Production\",";
-  postData = postData + "\"Version\": \"" + VERSION_NUMBER + "\"";
-  postData = postData + "\"LogNumber\": \"" + String(numLogs) + "\"";
+    postData = postData + ",\"@m\": \"" + message + "\"";
+  postData = postData + ",\"Application\": \"WaterTankSensor\"";
+  postData = postData + ",\"Environment\": \"Production\"";
+  postData = postData + ",\"Version\": \"" + VERSION_NUMBER + "\"";
+  postData = postData + ",\"LogNumber\": \"" + String(numLogs) + "\"";
   if (value1Name != "")
     postData = postData + ",\"" + value1Name + "\": \"" + value1 + "\"";
   if (value1Name != "")
