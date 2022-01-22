@@ -7,6 +7,8 @@
 const int SLEEPTIME_IN_MINUTES = 15;
 const int TANK_SENSOR_HEIGHT_IN_CM = 180;
 const int TANK_OVERFLOW_HEIGHT_IN_CM = 150;
+const int READINGS_TO_TAKE = 10;
+const int DELAY_BETWEEN_READINGS_IN_MS = 50;
 
 //seq logging
 #define SEQ_URL      "${{ secrets.SEQ_URL }}"

@@ -64,16 +64,16 @@ void setup()
 
   Serial.println();
 
-  float readings[10];
+  float readings[READINGS_TO_TAKE];
 
-  for (int i = 0; i < 10; i++) {
+  for (int i = 0; i < READINGS_TO_TAKE; i++) {
     readings[i] = hc.dist();
     char buffer[60];
     sprintf(buffer, "Water level (reading %d) is %f cm from the sensor", i, readings[i]);
     log(buffer, "Water level (reading {ReadingNumber}) is {ReadingValue} cm from the sensor", "ReadingNumber", String(i), "ReadingValue", String(readings[i]));
-    delay(250);
+    delay(DELAY_BETWEEN_READINGS_IN_MS);
   }
-  float averageReading = average(readings, 10);
+  float averageReading = average(readings, READINGS_TO_TAKE);
   log("Average reading is " + String(averageReading), "Average reading is {AverageValue} cm from the sensor", "AverageValue", String(averageReading));
 
   float distanceFromBottomOfTank = TANK_SENSOR_HEIGHT_IN_CM - averageReading;
