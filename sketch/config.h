@@ -4,7 +4,7 @@
 #define WLAN_SSID  "${{ secrets.WLAN_SSID }}"
 #define WLAN_PASSWD "${{ secrets.WLAN_PASSWD }}"
 
-const int SLEEPTIME = 30e7; //300 seconds
+const int SLEEPTIME_IN_MINUTES = 15;
 const int TANK_SENSOR_HEIGHT_IN_CM = 180;
 const int TANK_OVERFLOW_HEIGHT_IN_CM = 150;
 
