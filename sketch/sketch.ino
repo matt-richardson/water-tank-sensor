@@ -83,8 +83,11 @@ void setup()
 
   if (percentageFull < 0)
     log("Value is less than 0. Not going to publish the data.");
+  else if (percentageFull > 100)
+    log("Value is greater than 100. Not going to publish the data.");
   else
     SendData(percentageFull);
+
   flushLogs();
 
   CheckForUpdate();
