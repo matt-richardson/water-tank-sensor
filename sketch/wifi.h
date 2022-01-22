@@ -50,7 +50,7 @@ void ConnectWifi()
       WiFi.disconnect( true );
       delay( 1 );
       WiFi.mode( WIFI_OFF );
-      ESP.deepSleep( SLEEPTIME, WAKE_RF_DISABLED );
+      ESP.deepSleep( WIFI_FAILED_TO_CONNECT_SLEEPTIME_IN_MINUTES * 60 * 1000000, WAKE_RF_DISABLED );
       return; // Not expecting this to be called, the previous call will never return.
     }
     delay( 50 );
