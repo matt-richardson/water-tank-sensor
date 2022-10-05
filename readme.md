@@ -1,6 +1,6 @@
 # Water Tank Sensor
 
-Uses an ESP8266 and a JSN SR04T to measure the water level, and post it to io.adafruit.com.
+Uses an ESP8266 and a JSN SR04T to measure the water level, and post it to [io.adafruit.com](https://io.adafruit.com).
 
 
 ## Configuration
