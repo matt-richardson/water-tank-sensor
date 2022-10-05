@@ -102,7 +102,7 @@ jobs:
         server: ${{ secrets.OCTOPUS_SERVER }}
 
     - name: 🐙 Create a release in Octopus Deploy
-      uses: OctopusDeploy/create-release-action@v1.1.1
+      uses: OctopusDeploy/create-release-action@v2
       with:
         api_key: ${{ secrets.OCTOPUS_API_KEY }}
         project: 'Water Tank Sensor'
