@@ -1,6 +1,5 @@
 #ifndef log_h
 #define log_h
-
 ;
 #include <ezTime.h>
 #include <config.h>
@@ -16,6 +15,7 @@ struct LogEntry {
 };
 ArduinoQueue<LogEntry> logs(50);
 bool ntpSyncComplete = false;
+unsigned long millisecondsSinceBoot = millis();
 
 void log(String message, String messageTemplate = "", String value1Name = "", String value1 = "", String value2Name = "", String value2 = "")
 {
@@ -44,9 +44,7 @@ void log(String message, String messageTemplate = "", String value1Name = "", St
   logs.enqueue(logEntry);
 }
 
-void flushLogs()
-{
-  unsigned long millisecondsSinceBoot = millis();
+void syncTime() {
   if (!ntpSyncComplete) {
     log("Waiting for NTP sync before publishing logs");
     waitForSync();
@@ -56,13 +54,26 @@ void flushLogs()
         "MillisecondsSinceBoot", String(millisecondsSinceBoot));
     ntpSyncComplete = true;
   }
+}
 
+int postDataToSeq(String postData) {
   HTTPClient http;
   WiFiClientSecure wifiClient;
   wifiClient.setInsecure(); //todo: fix so it does proper validation
   http.begin(wifiClient, SEQ_URL "/api/events/raw");
   http.addHeader("Content-Type", "application/vnd.serilog.clef");
   http.addHeader("X-Seq-ApiKey", SEQ_API_KEY);
+
+  int httpCode = http.POST(postData);
+  Serial.println("Seq returned http code " + String(httpCode));
+  String payload = http.getString();
+  Serial.println("Seq returned payload: " + payload); 
+  http.end();
+  return httpCode;
+}
+
+void flushLogs() {
+  syncTime();
 
   String postData = "";
   unsigned long timeNow = now();
@@ -75,11 +86,16 @@ void flushLogs()
   Serial.printf("Sending data to %s\n", SEQ_URL "/api/events/raw");
   Serial.println(postData);
 
-  int httpCode = http.POST(postData);
-  Serial.println("Seq return http code " + String(httpCode));
-  String payload = http.getString();
-  Serial.println("Seq returned payload: " + payload); 
-  http.end();
+  bool retry;
+  int attemptCount = 0;
+  do {
+    retry = false;
+    int returnCode = postDataToSeq(postData);
+    if (returnCode < 0 && attemptCount++ < 5) {
+      Serial.printf("Sending data to seq failed with %d. Retrying.\n", returnCode);
+      retry = true;
+    }
+  } while (retry);
 }
 
 #endif
