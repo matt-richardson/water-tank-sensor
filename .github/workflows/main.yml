@@ -91,7 +91,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: dawidchyrzynski/arduino-home-assistant        
-        ref: master
+        ref: main
         path: CustomArduinoHomeAssistant
 
     - name: Compile 
