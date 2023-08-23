@@ -50,6 +50,10 @@ jobs:
         perl -pi -e 's/\$\{\{ secrets.OTA_ENDPOINT \}\}/$ENV{OTA_ENDPOINT}/' sketch/config.h
         perl -pi -e 's/\$\{\{ secrets.OTA_USERNAME \}\}/$ENV{OTA_USERNAME}/' sketch/config.h
         perl -pi -e 's/\$\{\{ secrets.OTA_PASSWORD \}\}/$ENV{OTA_PASSWORD}/' sketch/config.h
+        perl -pi -e 's/\$\{\{ secrets.MQTT_BROKER_ADDR \}\}/$ENV{MQTT_BROKER_ADDR}/' sketch/config.h
+        perl -pi -e 's/\$\{\{ secrets.MQTT_BROKER_PORT \}\}/$ENV{MQTT_BROKER_PORT}/' sketch/config.h
+        perl -pi -e 's/\$\{\{ secrets.MQTT_BROKER_USER \}\}/$ENV{MQTT_BROKER_USER}/' sketch/config.h
+        perl -pi -e 's/\$\{\{ secrets.MQTT_BROKER_PASS \}\}/$ENV{MQTT_BROKER_PASS}/' sketch/config.h
         perl -pi -e 's/\$\{\{ github.VERSION_NUMBER \}\}/$ENV{VERSION_NUMBER}/' sketch/config.h
       env:
         WLAN_SSID: ${{ secrets.WLAN_SSID }}
@@ -62,6 +66,10 @@ jobs:
         OTA_ENDPOINT: ${{ secrets.OTA_ENDPOINT }}
         OTA_USERNAME: ${{ secrets.OTA_USERNAME }}
         OTA_PASSWORD: ${{ secrets.OTA_PASSWORD }}
+        MQTT_BROKER_ADDR: ${{ secrets.MQTT_BROKER_ADDR }}
+        MQTT_BROKER_PORT: ${{ secrets.MQTT_BROKER_PORT }}
+        MQTT_BROKER_USER: ${{ secrets.MQTT_BROKER_USER }}
+        MQTT_BROKER_PASS: ${{ secrets.MQTT_BROKER_PASS }}
         VERSION_NUMBER: ${{ steps.calculate_version.outputs.octoversion_fullsemver }}
 
     # cant get this to work via the required-libraries
@@ -70,14 +78,21 @@ jobs:
       with:
         repository: gamegine/HCSR04-ultrasonic-sensor-lib
         ref: master
-        path: CustomHCSR04 # must contain string "Custom"
+        path: CustomHCSR04
 
     - name: Get ezTime library 
       uses: actions/checkout@v2
       with:
         repository: ropg/ezTime
         ref: master
-        path: CustomEzTime # must contain string "Custom"
+        path: CustomEzTime
+
+    - name: Get arduino-home-assistant library 
+      uses: actions/checkout@v2
+      with:
+        repository: dawidchyrzynski/arduino-home-assistant        
+        ref: master
+        path: CustomArduinoHomeAssistant
 
     - name: Compile 
       uses: ArminJo/arduino-test-compile@v3

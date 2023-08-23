@@ -27,4 +27,10 @@ const int DELAY_BETWEEN_READINGS_IN_MS = 50;
 
 #define VERSION_NUMBER "${{ github.VERSION_NUMBER }}"
 
+//mqtt broker for home assistant
+#define MQTT_BROKER_ADDR "${{ secrets.MQTT_BROKER_ADDR }}"
+#define MQTT_BROKER_PORT ${{ secrets.MQTT_BROKER_PORT }}
+#define MQTT_BROKER_USER "${{ secrets.MQTT_BROKER_USER }}"
+#define MQTT_BROKER_PASS "${{ secrets.MQTT_BROKER_PASS }}"
+
 #endif

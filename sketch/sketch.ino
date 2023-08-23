@@ -1,11 +1,16 @@
 #include <HCSR04.h>
 #include <ESP8266HTTPClient.h>
+#include <ArduinoHA.h>
 #include "config.h"
 #include "httpUpdate.h"
 #include "log.h"
 #include "wifi.h"
 
 HCSR04 hc(13, 12); // Initialize Pin D7, D6
+
+HADevice device;
+HAMqtt mqtt(client, device);
+HASensorNumber waterTankSensor("WaterTankLevel");
 
 void SendData(float averageReading)
 {
@@ -61,8 +66,24 @@ void setup()
   log("OTA_ENDPOINT: " OTA_ENDPOINT, "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "OTA_ENDPOINT", "ConfigValue", OTA_ENDPOINT);
   log("OTA_USERNAME: " OTA_USERNAME, "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "OTA_USERNAME", "ConfigValue", OTA_USERNAME);
   log("VERSION_NUMBER: " VERSION_NUMBER, "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "VERSION_NUMBER", "ConfigValue", VERSION_NUMBER);
+  log("MQTT_BROKER_ADDR: " MQTT_BROKER_ADDR, "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "MQTT_BROKER_AD", "ConfigValue", MQTT_BROKER_ADDR);
+  log("MQTT_BROKER_PORT: " MQTT_BROKER_PORT, "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "MQTT_BROKER_PORT", "ConfigValue", MQTT_BROKER_PORT);
+  log("MQTT_BROKER_PORT: " MQTT_BROKER_USER, "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "MQTT_BROKER_USER", "ConfigValue", MQTT_BROKER_USER);
 
   Serial.println();
+
+  // configure HomeAssistant device
+  byte mac[WL_MAC_ADDR_LENGTH];
+  WiFi.macAddress(mac);
+  device.setUniqueId(mac, sizeof(mac));
+  device.setName("Water Tank");
+  device.setSoftwareVersion(VERSION_NUMBER);
+
+  // configure HomeAssisant sensor
+  waterTankSensor.setIcon("mdi:water");
+  waterTankSensor.setName("Water Level");
+  waterTankSensor.setUnitOfMeasurement("%");
+  mqtt.begin(MQTT_BROKER_ADDR, MQTT_BROKER_PORT, MQTT_BROKER_USER, MQTT_BROKER_PASS);
 
   float readings[READINGS_TO_TAKE];
 
@@ -87,6 +108,9 @@ void setup()
     log("Value is greater than 100. Not going to publish the data.");
   else
     SendData(percentageFull);
+
+  waterTankSensor.setValue(percentageFull);
+  mqtt.loop();
 
   flushLogs();
 
