@@ -15,20 +15,20 @@
 ESP8266WiFiMulti WiFiMulti;
 
 void update_started() {
-  log("OTA Update:  HTTP update process started");
+  log("OTA Update: HTTP update process started");
 }
 
 void update_finished() {
-  log("OTA Update:  HTTP update process finished");
+  log("OTA Update: HTTP update process finished");
   flushLogs();
 }
 
 void update_progress(int cur, int total) {
-  log("OTA Update:  HTTP update process at %d of %d bytes...\n", cur, total);
+  log("OTA Update: HTTP update process at " + String(cur) + "of " + String(total) + " bytes...", "HTTP update process {CurrentBytes} of {TotalBytes}", "CurrentBytes", String(cur), "TotalBytes", String(total));
 }
 
 void update_error(int err) {
-  log("OTA Update:  HTTP update fatal error code %d\n", err);
+  log("OTA Update: HTTP update fatal error code " + err, "HTTP update process failed with {ErrorCode}", "ErrorCode", String(err));
 }
 
 void CheckForUpdate() {
@@ -55,14 +55,19 @@ void CheckForUpdate() {
   switch (ret) {
       case HTTP_UPDATE_FAILED:
         Serial.printf("HTTP_UPDATE_FAILED Error (%d): %s\n", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+        log("OTA Update: HTTP update failed with error code " + String(ESPhttpUpdate.getLastError()) + ": " + ESPhttpUpdate.getLastErrorString().c_str(), "HTTP update process failed with {ErrorCode}: {ErrorDescription}", "ErrorCode", String(ESPhttpUpdate.getLastError()), "ErrorDescription", ESPhttpUpdate.getLastErrorString().c_str());
         break;
 
       case HTTP_UPDATE_NO_UPDATES:
         Serial.println("HTTP_UPDATE_NO_UPDATES");
+        log("OTA Update: No updates available");
         break;
 
       case HTTP_UPDATE_OK:
         Serial.println("HTTP_UPDATE_OK");
+        log("OTA Update: Update successful");
         break;
   }
+
+  flushLogs();
 }
