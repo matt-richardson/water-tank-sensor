@@ -101,6 +101,13 @@ jobs:
         ref: master
         path: CustomPubSubClient
 
+    - name: Get ArduinoQueue library 
+      uses: actions/checkout@v2
+      with:
+        repository: EinarArnason/ArduinoQueue        
+        ref: master
+        path: CustomArduinoQueue
+
     - name: Compile 
       uses: ArminJo/arduino-test-compile@v3
       with:

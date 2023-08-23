@@ -6,16 +6,23 @@
 #include <config.h>;
 #include <ESP8266HTTPClient.h>;
 #include <WiFiClientSecure.h>;
+#include <ArduinoQueue.h>;
 
 const int MAX_LOGS = 50;
-String logs[MAX_LOGS];
-unsigned long logTime[MAX_LOGS];
-int numLogs = 0;
+
+struct LogEntry {
+    unsigned long time;
+    String message;
+};
+ArduinoQueue<LogEntry> logs(50);
 
 void log(String message, String messageTemplate = "", String value1Name = "", String value1 = "", String value2Name = "", String value2 = "")
 {
+   LogEntry logEntry;
+
+  logEntry.time = millis();
+
   Serial.println(message);
-  logTime[numLogs] = millis();
 
   //these are not valid json strings - they need modification before publishing
   //we dont always have a valid time (ie, before we have connected to wifi, and we haven't done an ntp sync)
@@ -28,18 +35,17 @@ void log(String message, String messageTemplate = "", String value1Name = "", St
   postData = postData + ",\"Application\": \"WaterTankSensor\"";
   postData = postData + ",\"Environment\": \"Production\"";
   postData = postData + ",\"Version\": \"" + VERSION_NUMBER + "\"";
-  postData = postData + ",\"LogNumber\": \"" + String(numLogs) + "\"";
   if (value1Name != "")
     postData = postData + ",\"" + value1Name + "\": \"" + value1 + "\"";
   if (value2Name != "")
     postData = postData + ",\"" + value2Name + "\": \"" + value2 + "\"";
-  logs[numLogs] = postData;
-  numLogs++;
+  logEntry.message = message;
+  logs.enqueue(logEntry);
 }
 
 void flushLogs()
 {
-  log("Waiting for NTP sync");
+  log("Waiting for NTP sync before publishing logs");
   waitForSync();
   unsigned long millisecondsSinceBoot = millis();
   log("NTP sync complete. Time is " + dateTime(ISO8601) + ". It has been " + String(millisecondsSinceBoot) + " milliseconds since boot", 
@@ -56,9 +62,10 @@ void flushLogs()
 
   String postData = "";
   unsigned long timeNow = now();
-  for (int i=0; i < numLogs; i++) {
-    time_t messageTime = timeNow - (millisecondsSinceBoot / 1000) + (logTime[i] / 1000);
-    postData = postData + "{" + "\"@t\":\"" + dateTime(messageTime, ISO8601) + "\"" + logs[i] + "}\n";
+  while(!logs.isEmpty()) {
+    LogEntry logEntry = logs.dequeue(); 
+    time_t messageTime = timeNow - (millisecondsSinceBoot / 1000) + (logEntry.time / 1000);
+    postData = postData + "{" + "\"@t\":\"" + dateTime(messageTime, ISO8601) + "\"" + logEntry.message + "}\n";
   }
 
   Serial.print("Sending data: ");
