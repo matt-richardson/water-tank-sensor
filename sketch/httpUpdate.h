@@ -4,31 +4,35 @@
    Sourced from: https://github.com/esp8266/Arduino/blob/master/libraries/ESP8266httpUpdate/examples/httpUpdate/httpUpdate.ino
 */
 
-#include <Arduino.h>;
-#include <ESP8266WiFi.h>;
-#include <ESP8266WiFiMulti.h>;
-#include <ESP8266HTTPClient.h>;
-#include <ESP8266httpUpdate.h>;
-#include <WiFiClientSecure.h>;
+#include <Arduino.h>
+#include <ESP8266WiFi.h>
+#include <ESP8266WiFiMulti.h>
+#include <ESP8266HTTPClient.h>
+#include <ESP8266httpUpdate.h>
+#include <WiFiClientSecure.h>
 
 
 ESP8266WiFiMulti WiFiMulti;
 
 void update_started() {
-  log("OTA Update: HTTP update process started");
+  Serial.println("CALLBACK:  HTTP update process started");
+//  log("OTA Update: HTTP update process started");
 }
 
 void update_finished() {
-  log("OTA Update: HTTP update process finished");
-  flushLogs();
+  Serial.println("CALLBACK:  HTTP update process finished");
+  //log("OTA Update: HTTP update process finished");
+  //flushLogs();
 }
 
 void update_progress(int cur, int total) {
-  log("OTA Update: HTTP update process at " + String(cur) + "of " + String(total) + " bytes...", "HTTP update process {CurrentBytes} of {TotalBytes}", "CurrentBytes", String(cur), "TotalBytes", String(total));
+  Serial.printf("CALLBACK:  HTTP update process at %d of %d bytes...\n", cur, total);
+  //log("OTA Update: HTTP update process at " + String(cur) + "of " + String(total) + " bytes...", "HTTP update process {CurrentBytes} of {TotalBytes}", "CurrentBytes", String(cur), "TotalBytes", String(total));
 }
 
 void update_error(int err) {
-  log("OTA Update: HTTP update fatal error code " + err, "HTTP update process failed with {ErrorCode}", "ErrorCode", String(err));
+  Serial.printf("CALLBACK:  HTTP update fatal error code %d\n", err);
+  //log("OTA Update: HTTP update fatal error code " + err, "HTTP update process failed with {ErrorCode}", "ErrorCode", String(err));
 }
 
 void CheckForUpdate() {
@@ -53,23 +57,23 @@ void CheckForUpdate() {
   t_httpUpdate_return ret = ESPhttpUpdate.update(wifiClient, OTA_ENDPOINT "/update", VERSION_NUMBER);
 
   switch (ret) {
-      case HTTP_UPDATE_FAILED:
-        Serial.printf("HTTP_UPDATE_FAILED Error (%d): %s\n", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
-        log("OTA Update: HTTP update failed with error code " + String(ESPhttpUpdate.getLastError()) + ": " + ESPhttpUpdate.getLastErrorString(), "HTTP update process failed with {ErrorCode}: {ErrorDescription}", "ErrorCode", String(ESPhttpUpdate.getLastError()), "ErrorDescription", ESPhttpUpdate.getLastErrorString());
-        break;
+    case HTTP_UPDATE_FAILED:
+      Serial.printf("HTTP_UPDATE_FAILED Error (%d): %s\n", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
+      // log("OTA Update: HTTP update failed with error code " + String(ESPhttpUpdate.getLastError()) + ": " + ESPhttpUpdate.getLastErrorString(), "HTTP update process failed with {ErrorCode}: {ErrorDescription}", "ErrorCode", String(ESPhttpUpdate.getLastError()), "ErrorDescription", ESPhttpUpdate.getLastErrorString());
+      break;
 
-      case HTTP_UPDATE_NO_UPDATES:
-        Serial.println("HTTP_UPDATE_NO_UPDATES");
-        log("OTA Update: No updates available");
-        break;
+    case HTTP_UPDATE_NO_UPDATES:
+      Serial.println("HTTP_UPDATE_NO_UPDATES");
+      // log("OTA Update: No updates available");
+      break;
 
-      case HTTP_UPDATE_OK:
-        Serial.println("HTTP_UPDATE_OK");
-        log("OTA Update: Update successful");
-        break;
+    case HTTP_UPDATE_OK:
+      Serial.println("HTTP_UPDATE_OK");
+      // log("OTA Update: Update successful");
+      break;
   }
 
-  log("OTA Update: Finished");
+  // log("OTA Update: Finished");
 
-  flushLogs();
+  // flushLogs();
 }

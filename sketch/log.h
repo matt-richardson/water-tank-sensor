@@ -1,12 +1,12 @@
-#ifndef log_h;
-#define log_h;
+#ifndef log_h
+#define log_h
 
 ;
-#include <ezTime.h>;
-#include <config.h>;
-#include <ESP8266HTTPClient.h>;
-#include <WiFiClientSecure.h>;
-#include <ArduinoQueue.h>;
+#include <ezTime.h>
+#include <config.h>
+#include <ESP8266HTTPClient.h>
+#include <WiFiClientSecure.h>
+#include <ArduinoQueue.h>
 
 const int MAX_LOGS = 50;
 
@@ -18,7 +18,7 @@ ArduinoQueue<LogEntry> logs(50);
 
 void log(String message, String messageTemplate = "", String value1Name = "", String value1 = "", String value2Name = "", String value2 = "")
 {
-   LogEntry logEntry;
+  LogEntry logEntry;
 
   logEntry.time = millis();
 

@@ -1,11 +1,11 @@
-#include <HCSR04.h>;
-#include <ESP8266HTTPClient.h>;
-#include "config.h";
-#include "log.h";
-#include "wifi.h";
-#include "httpUpdate.h";
-#include <Ethernet.h>;
-#include <ArduinoHA.h>;
+#include <HCSR04.h>
+#include <ESP8266HTTPClient.h>
+#include "config.h"
+#include "log.h"
+#include "wifi.h"
+#include "httpUpdate.h"
+#include <Ethernet.h>
+#include <ArduinoHA.h>
 
 ;
 HCSR04 hc(13, 12);  // Initialize Pin D7, D6
