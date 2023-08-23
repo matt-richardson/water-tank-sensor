@@ -94,6 +94,14 @@ jobs:
         ref: main
         path: CustomArduinoHomeAssistant
 
+
+    - name: Get pubsubclient library 
+      uses: actions/checkout@v2
+      with:
+        repository: knolleary/pubsubclient        
+        ref: master
+        path: CustomPubSubClient
+
     - name: Compile 
       uses: ArminJo/arduino-test-compile@v3
       with:
