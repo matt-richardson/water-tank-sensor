@@ -36,6 +36,9 @@ void update_error(int err) {
 }
 
 void CheckForUpdate() {
+
+  log("OTA Update: Checking for update");
+
   // The line below is optional. It can be used to blink the LED on the board during flashing
   // The LED will be on during download of one buffer of data from the network. The LED will
   // be off during writing that buffer to flash
@@ -71,6 +74,12 @@ void CheckForUpdate() {
       Serial.println("HTTP_UPDATE_OK");
       log("OTA Update: Update successful");
       break;
+
+    default:
+      Serial.println("HTTP_UPDATE_UNKNOWN");
+      log("OTA Update: Unknown response");
+      break;
+
   }
 
   log("OTA Update: Finished");
