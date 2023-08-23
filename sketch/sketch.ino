@@ -5,6 +5,7 @@
 #include "httpUpdate.h"
 #include "log.h"
 #include "wifi.h"
+#include <Ethernet.h>
 
 HCSR04 hc(13, 12); // Initialize Pin D7, D6
 
