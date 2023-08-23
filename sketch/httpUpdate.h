@@ -69,5 +69,7 @@ void CheckForUpdate() {
         break;
   }
 
+  log("OTA Update: Finished");
+
   flushLogs();
 }
