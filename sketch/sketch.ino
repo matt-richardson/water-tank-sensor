@@ -125,7 +125,7 @@ void setup()
   mqtt.loop();
   log("Looping a second time.");
   mqtt.loop();
-  log("disconnecting.");
+  log("Disconnecting from MQTT transport.");
   mqtt.disconnect();
 
   flushLogs();
