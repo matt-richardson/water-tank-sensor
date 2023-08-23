@@ -53,6 +53,10 @@ float average (float * array, int len)
   return  ((float) sum) / nonZeroValues;
 }
 
+void onMqttConnected() {
+  log("MQTT is connected");
+}
+
 void setup()
 {
   delay(1000);
@@ -86,7 +90,10 @@ void setup()
   waterTankSensor.setIcon("mdi:water");
   waterTankSensor.setName("Water Level");
   waterTankSensor.setUnitOfMeasurement("%");
+  mqtt.onConnected(onMqttConnected);
+
   mqtt.begin(MQTT_BROKER_ADDR, MQTT_BROKER_PORT, MQTT_BROKER_USER, MQTT_BROKER_PASS);
+  
 
   float readings[READINGS_TO_TAKE];
 
@@ -112,13 +119,22 @@ void setup()
   else
     SendData(percentageFull);
 
+  log("Setting water tank sensor value.");
   waterTankSensor.setValue(percentageFull);
+  log("Looping.");
   mqtt.loop();
+  log("Looping a second time.");
+  mqtt.loop();
+  log("disconnecting.");
+  mqtt.disconnect();
 
   flushLogs();
 
   CheckForUpdate();
   log("Going into deep sleep mode for " + String(SLEEPTIME_IN_MINUTES) + String(" minutes"), "Going into deep sleep mode for {SleepTime} minutes", "SleepTime", String(SLEEPTIME_IN_MINUTES));
+
+  flushLogs();
+
   ESP.deepSleep( SLEEPTIME_IN_MINUTES * 60 * 1000000, WAKE_RF_DISABLED );
 }
 
