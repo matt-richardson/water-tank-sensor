@@ -15,6 +15,7 @@ struct LogEntry {
     String message;
 };
 ArduinoQueue<LogEntry> logs(50);
+bool ntpSyncComplete = false;
 
 void log(String message, String messageTemplate = "", String value1Name = "", String value1 = "", String value2Name = "", String value2 = "")
 {
@@ -45,13 +46,16 @@ void log(String message, String messageTemplate = "", String value1Name = "", St
 
 void flushLogs()
 {
-  log("Waiting for NTP sync before publishing logs");
-  waitForSync();
   unsigned long millisecondsSinceBoot = millis();
-  log("NTP sync complete. Time is " + dateTime(ISO8601) + ". It has been " + String(millisecondsSinceBoot) + " milliseconds since boot", 
-      "NTP sync complete. Time is {Time}. It has been {MillisecondsSinceBoot} milliseconds since boot", 
-      "Time", dateTime(ISO8601), 
-      "MillisecondsSinceBoot", String(millisecondsSinceBoot));
+  if (!ntpSyncComplete) {
+    log("Waiting for NTP sync before publishing logs");
+    waitForSync();
+    log("NTP sync complete. Time is " + dateTime(ISO8601) + ". It has been " + String(millisecondsSinceBoot) + " milliseconds since boot", 
+        "NTP sync complete. Time is {Time}. It has been {MillisecondsSinceBoot} milliseconds since boot", 
+        "Time", dateTime(ISO8601), 
+        "MillisecondsSinceBoot", String(millisecondsSinceBoot));
+    ntpSyncComplete = true;
+  }
 
   HTTPClient http;
   WiFiClientSecure wifiClient;
