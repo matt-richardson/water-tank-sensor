@@ -72,13 +72,13 @@ void flushLogs()
     postData = postData + "{" + "\"@t\":\"" + dateTime(messageTime, ISO8601) + "\"" + logEntry.message + "}\n";
   }
 
-  Serial.printf("Sending data to %s", SEQ_URL "/api/events/raw");
+  Serial.printf("Sending data to %s\n", SEQ_URL "/api/events/raw");
   Serial.println(postData);
 
   int httpCode = http.POST(postData);
   Serial.println("Seq return http code " + String(httpCode));
   String payload = http.getString();
-  Serial.println("Seq returned: " + payload); 
+  Serial.println("Seq returned payload: " + payload); 
   http.end();
 }
 
