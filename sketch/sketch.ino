@@ -75,7 +75,7 @@ void setup()
   log("VERSION_NUMBER: " VERSION_NUMBER, "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "VERSION_NUMBER", "ConfigValue", VERSION_NUMBER);
   log("MQTT_BROKER_ADDR: " MQTT_BROKER_ADDR, "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "MQTT_BROKER_ADDR", "ConfigValue", MQTT_BROKER_ADDR);
   log("MQTT_BROKER_PORT: " + String(MQTT_BROKER_PORT), "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "MQTT_BROKER_PORT", "ConfigValue", String(MQTT_BROKER_PORT));
-  log("MQTT_BROKER_PORT: " MQTT_BROKER_USER, "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "MQTT_BROKER_USER", "ConfigValue", MQTT_BROKER_USER);
+  log("MQTT_BROKER_USER: " MQTT_BROKER_USER, "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "MQTT_BROKER_USER", "ConfigValue", MQTT_BROKER_USER);
 
   Serial.println();
 
