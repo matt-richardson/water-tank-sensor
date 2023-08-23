@@ -8,6 +8,7 @@
 
 HCSR04 hc(13, 12); // Initialize Pin D7, D6
 
+EthernetClient client;
 HADevice device;
 HAMqtt mqtt(client, device);
 HASensorNumber waterTankSensor("WaterTankLevel");
