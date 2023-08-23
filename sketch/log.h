@@ -39,7 +39,7 @@ void log(String message, String messageTemplate = "", String value1Name = "", St
     postData = postData + ",\"" + value1Name + "\": \"" + value1 + "\"";
   if (value2Name != "")
     postData = postData + ",\"" + value2Name + "\": \"" + value2 + "\"";
-  logEntry.message = message;
+  logEntry.message = postData;
   logs.enqueue(logEntry);
 }
 
@@ -68,7 +68,7 @@ void flushLogs()
     postData = postData + "{" + "\"@t\":\"" + dateTime(messageTime, ISO8601) + "\"" + logEntry.message + "}\n";
   }
 
-  Serial.print("Sending data: ");
+  Serial.print("Sending data to %s", SEQ_URL "/api/events/raw");
   Serial.println(postData);
 
   int httpCode = http.POST(postData);
