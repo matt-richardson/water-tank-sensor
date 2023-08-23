@@ -5,10 +5,10 @@
 #include <config.h>
 #include <ESP8266HTTPClient.h>
 
-const unsigned MAX_LOGS = 50;
+const int MAX_LOGS = 50;
 String logs[MAX_LOGS];
 unsigned long logTime[MAX_LOGS];
-unsigned int numLogs = 0;
+int numLogs = 0;
 
 void log(String message, String messageTemplate = "", String value1Name = "", String value1 = "", String value2Name = "", String value2 = "")
 {
