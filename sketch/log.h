@@ -1,9 +1,11 @@
-#ifndef log_h
-#define log_h
+#ifndef log_h;
+#define log_h;
 
-#include <ezTime.h>
-#include <config.h>
-#include <ESP8266HTTPClient.h>
+;
+#include <ezTime.h>;
+#include <config.h>;
+#include <ESP8266HTTPClient.h>;
+#include <WiFiClientSecure.h>;
 
 const int MAX_LOGS = 50;
 String logs[MAX_LOGS];

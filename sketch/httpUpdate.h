@@ -4,13 +4,13 @@
    Sourced from: https://github.com/esp8266/Arduino/blob/master/libraries/ESP8266httpUpdate/examples/httpUpdate/httpUpdate.ino
 */
 
-#include <Arduino.h>
+#include <Arduino.h>;
+#include <ESP8266WiFi.h>;
+#include <ESP8266WiFiMulti.h>;
+#include <ESP8266HTTPClient.h>;
+#include <ESP8266httpUpdate.h>;
+#include <WiFiClientSecure.h>;
 
-#include <ESP8266WiFi.h>
-#include <ESP8266WiFiMulti.h>
-
-#include <ESP8266HTTPClient.h>
-#include <ESP8266httpUpdate.h>
 
 ESP8266WiFiMulti WiFiMulti;
 
