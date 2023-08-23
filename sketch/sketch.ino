@@ -1,13 +1,16 @@
-#include <HCSR04.h>
-#include <ESP8266HTTPClient.h>
-#include <ArduinoHA.h>
-#include "config.h"
-#include "httpUpdate.h"
-#include "log.h"
-#include "wifi.h"
+#include <HCSR04.h>;
+#include <ESP8266HTTPClient.h>;
+#include "config.h";
+#include "log.h";
+#include "wifi.h";
+#include "httpUpdate.h";
+#include <Ethernet.h>;
+#include <ArduinoHA.h>;
 
-HCSR04 hc(13, 12); // Initialize Pin D7, D6
+;
+HCSR04 hc(13, 12);  // Initialize Pin D7, D6
 
+EthernetClient client;
 HADevice device;
 HAMqtt mqtt(client, device);
 HASensorNumber waterTankSensor("WaterTankLevel");
@@ -66,8 +69,8 @@ void setup()
   log("OTA_ENDPOINT: " OTA_ENDPOINT, "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "OTA_ENDPOINT", "ConfigValue", OTA_ENDPOINT);
   log("OTA_USERNAME: " OTA_USERNAME, "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "OTA_USERNAME", "ConfigValue", OTA_USERNAME);
   log("VERSION_NUMBER: " VERSION_NUMBER, "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "VERSION_NUMBER", "ConfigValue", VERSION_NUMBER);
-  log("MQTT_BROKER_ADDR: " MQTT_BROKER_ADDR, "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "MQTT_BROKER_AD", "ConfigValue", MQTT_BROKER_ADDR);
-  log("MQTT_BROKER_PORT: " MQTT_BROKER_PORT, "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "MQTT_BROKER_PORT", "ConfigValue", MQTT_BROKER_PORT);
+  log("MQTT_BROKER_ADDR: " MQTT_BROKER_ADDR, "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "MQTT_BROKER_ADDR", "ConfigValue", MQTT_BROKER_ADDR);
+  log("MQTT_BROKER_PORT: " + String(MQTT_BROKER_PORT), "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "MQTT_BROKER_PORT", "ConfigValue", String(MQTT_BROKER_PORT));
   log("MQTT_BROKER_PORT: " MQTT_BROKER_USER, "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "MQTT_BROKER_USER", "ConfigValue", MQTT_BROKER_USER);
 
   Serial.println();

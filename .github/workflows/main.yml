@@ -94,7 +94,6 @@ jobs:
         ref: main
         path: CustomArduinoHomeAssistant
 
-
     - name: Get pubsubclient library 
       uses: actions/checkout@v2
       with:
