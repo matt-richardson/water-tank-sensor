@@ -67,22 +67,21 @@ void CheckForUpdate() {
 
     case HTTP_UPDATE_NO_UPDATES:
       Serial.println("HTTP_UPDATE_NO_UPDATES");
-      log("OTA Update: No updates available");
+      log("OTA Update: No updates available", true);
       break;
 
     case HTTP_UPDATE_OK:
       Serial.println("HTTP_UPDATE_OK");
-      log("OTA Update: Update successful");
+      log("OTA Update: Update successful", true);
       break;
 
     default:
       Serial.println("HTTP_UPDATE_UNKNOWN");
-      log("OTA Update: Unknown response");
+      log("OTA Update: Unknown response", true);
       break;
-
   }
 
-  log("OTA Update: Finished");
+  log("OTA Update: Finished", true);
 
   flushLogs();
 }
