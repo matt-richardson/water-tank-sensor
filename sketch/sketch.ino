@@ -16,8 +16,16 @@ HASensorNumber waterTankSensor("WaterTankLevel");
 unsigned long lastWaterLevelCheckTime = 0;
 unsigned long lastUpdateCheckTime = 0;
 
-void SendData(float averageReading)
-{
+void SendDataToIoAdafruitCom(float percentageFull) {
+  if (percentageFull < 0) {
+    log("Value is less than 0. Not going to publish the data to io.adafruit.com.");
+    return;
+  }
+  else if (percentageFull > 100) {
+    log("Value is greater than 100. Not going to publish the data to io.adafruit.com.");
+    return;
+  }
+
   Serial.println("Sending data to io.adafruit.com");
 
   HTTPClient http;
@@ -28,7 +36,7 @@ void SendData(float averageReading)
   http.addHeader("Content-Type", "application/x-www-form-urlencoded");
   http.addHeader("X-AIO-Key", IO_KEY);
   String postDataPrefix = "value=";
-  String postData = postDataPrefix + String(averageReading);
+  String postData = postDataPrefix + String(percentageFull);
   Serial.print("Sending data: ");
   Serial.println(postData);
   int httpCode = http.POST(postData);
@@ -38,8 +46,26 @@ void SendData(float averageReading)
   http.end(); //Close connection
 }
 
-float average (float * array, int len)
-{
+void SendDataToHomeAssistant(float percentageFull) {
+  if (percentageFull < 0) {
+    log("Value is less than 0. Not going to publish the data to Home Assistant.");
+    return;
+  }
+  else if (percentageFull > 100) {
+    log("Value is greater than 100. Not going to publish the data to Home Assistant.");
+    return;
+  }
+  log("Setting Home Assistant water tank sensor value to " + String(percentageFull), "Setting Home Assistant water tank sensor value to {SensorValue}%", "SensorValue", String(percentageFull));
+
+  waterTankSensor.setValue(percentageFull);
+}
+
+void SendData(float percentageFull) {
+  SendDataToIoAdafruitCom(percentageFull);
+  SendDataToHomeAssistant(percentageFull);
+}
+
+float average (float * array, int len) {
   float sum = 0;
   int nonZeroValues = 0;
   for (int i = 0 ; i < len ; i++)
@@ -86,7 +112,7 @@ void calculateWaterLevel() {
   else
     SendData(percentageFull);
 
-  log("Setting water tank sensor value.");
+  log("Setting Home Assistant water tank sensor value.");
   waterTankSensor.setValue(percentageFull);
 
   log("Finished checking water level.");
