@@ -17,8 +17,31 @@ ArduinoQueue<LogEntry> logs(50);
 bool ntpSyncComplete = false;
 unsigned long millisecondsSinceBoot = millis();
 
-void log(String message, String messageTemplate = "", String value1Name = "", String value1 = "", String value2Name = "", String value2 = "")
-{
+String formatLogEntry(LogEntry logEntry) {
+  unsigned long timeNow = now();
+  time_t messageTime = timeNow - (millisecondsSinceBoot / 1000) + (logEntry.time / 1000);
+  String formattedLogEntry = "";
+  formattedLogEntry = formattedLogEntry + "{" + "\"@t\":\"" + dateTime(messageTime, ISO8601) + "\"" + logEntry.message + "}\n";
+  return formattedLogEntry;
+}
+
+int postDataToSeq(String postData) {
+  HTTPClient http;
+  WiFiClientSecure wifiClient;
+  wifiClient.setInsecure(); //todo: fix so it does proper validation
+  http.begin(wifiClient, SEQ_URL "/api/events/raw");
+  http.addHeader("Content-Type", "application/vnd.serilog.clef");
+  http.addHeader("X-Seq-ApiKey", SEQ_API_KEY);
+
+  int httpCode = http.POST(postData);
+  Serial.println("Seq returned http code " + String(httpCode));
+  String payload = http.getString();
+  Serial.println("Seq returned payload: " + payload); 
+  http.end();
+  return httpCode;
+}
+
+void log(String message, String messageTemplate, String value1Name, String value1, String value2Name, String value2, bool immediate = false) {
   LogEntry logEntry;
 
   logEntry.time = millis();
@@ -41,7 +64,19 @@ void log(String message, String messageTemplate = "", String value1Name = "", St
   if (value2Name != "")
     postData = postData + ",\"" + value2Name + "\": \"" + value2 + "\"";
   logEntry.message = postData;
-  logs.enqueue(logEntry);
+
+  if (immediate) {
+    postDataToSeq(formatLogEntry(logEntry));
+  } else {
+    logs.enqueue(logEntry);
+  }
+}
+
+void log(String message, String messageTemplate, String value1Name, String value1, bool immediate = false) {
+  log(message, messageTemplate, value1Name, value1, /*value2Name:*/ "", /*value2:*/ "", immediate);
+}
+void log(String message, bool immediate = false) {
+  log(message, /*messageTemplate:*/ "", /*value1Name:*/ "", /*value1:*/ "", immediate);
 }
 
 void syncTime() {
@@ -56,31 +91,13 @@ void syncTime() {
   }
 }
 
-int postDataToSeq(String postData) {
-  HTTPClient http;
-  WiFiClientSecure wifiClient;
-  wifiClient.setInsecure(); //todo: fix so it does proper validation
-  http.begin(wifiClient, SEQ_URL "/api/events/raw");
-  http.addHeader("Content-Type", "application/vnd.serilog.clef");
-  http.addHeader("X-Seq-ApiKey", SEQ_API_KEY);
-
-  int httpCode = http.POST(postData);
-  Serial.println("Seq returned http code " + String(httpCode));
-  String payload = http.getString();
-  Serial.println("Seq returned payload: " + payload); 
-  http.end();
-  return httpCode;
-}
-
 void flushLogs() {
   syncTime();
 
   String postData = "";
-  unsigned long timeNow = now();
   while(!logs.isEmpty()) {
     LogEntry logEntry = logs.dequeue(); 
-    time_t messageTime = timeNow - (millisecondsSinceBoot / 1000) + (logEntry.time / 1000);
-    postData = postData + "{" + "\"@t\":\"" + dateTime(messageTime, ISO8601) + "\"" + logEntry.message + "}\n";
+    String formattedLogEntry = formatLogEntry(logEntry);
   }
 
   Serial.printf("Sending data to %s\n", SEQ_URL "/api/events/raw");

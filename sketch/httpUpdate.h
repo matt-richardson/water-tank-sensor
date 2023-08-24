@@ -37,7 +37,7 @@ void update_error(int err) {
 
 void CheckForUpdate() {
 
-  log("OTA Update: Checking for update");
+  log("OTA Update: Checking for update", true);
 
   // The line below is optional. It can be used to blink the LED on the board during flashing
   // The LED will be on during download of one buffer of data from the network. The LED will
