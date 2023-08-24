@@ -4,16 +4,17 @@
 #include "log.h"
 #include "wifi.h"
 #include "httpUpdate.h"
-#include <Ethernet.h>
 #include <ArduinoHA.h>
 
 ;
 HCSR04 hc(13, 12);  // Initialize Pin D7, D6
 
-EthernetClient client;
+WiFiClient client;
 HADevice device;
 HAMqtt mqtt(client, device);
 HASensorNumber waterTankSensor("WaterTankLevel");
+unsigned long lastWaterLevelCheckTime = 0;
+unsigned long lastUpdateCheckTime = 0;
 
 void SendData(float averageReading)
 {
@@ -57,9 +58,39 @@ void onMqttConnected() {
   log("MQTT is connected");
 }
 
+void calculateWaterLevel() {
+  float readings[READINGS_TO_TAKE];
+
+  for (int i = 0; i < READINGS_TO_TAKE; i++) {
+    readings[i] = hc.dist();
+    char buffer[60];
+    sprintf(buffer, "Water level (reading %d) is %f cm from the sensor", i, readings[i]);
+    log(buffer, "Water level (reading {ReadingNumber}) is {ReadingValue} cm from the sensor", "ReadingNumber", String(i), "ReadingValue", String(readings[i]));
+    delay(DELAY_BETWEEN_READINGS_IN_MS);
+  }
+  float averageReading = average(readings, READINGS_TO_TAKE);
+  log("Average reading is " + String(averageReading), "Average reading is {AverageValue} cm from the sensor", "AverageValue", String(averageReading));
+
+  float distanceFromBottomOfTank = TANK_SENSOR_HEIGHT_IN_CM - averageReading;
+  float percentageFull = (distanceFromBottomOfTank / TANK_OVERFLOW_HEIGHT_IN_CM) * 100;
+
+  log("Tank is " + String(percentageFull) + String("% full"), "Tank is {PercentFull}% full", "PercentFull", String(percentageFull));
+
+  if (percentageFull < 0)
+    log("Value is less than 0. Not going to publish the data to io.adafruit.com.");
+  else if (percentageFull > 100)
+    log("Value is greater than 100. Not going to publish the data to io.adafruit.com.");
+  else
+    SendData(percentageFull);
+
+  log("Setting water tank sensor value.");
+  waterTankSensor.setValue(percentageFull);
+
+  log("Finished checking water level.");
+}
+
 void setup()
 {
-  delay(1000);
   Serial.begin(115200);
 
   ConnectWifi();
@@ -85,8 +116,10 @@ void setup()
   device.setUniqueId(mac, sizeof(mac));
   device.setName("Water Tank");
   device.setSoftwareVersion(VERSION_NUMBER);
+  device.enableSharedAvailability();
+  device.enableLastWill();
 
-  // configure HomeAssisant sensor
+  // configure HomeAssistant sensor
   waterTankSensor.setIcon("mdi:water");
   waterTankSensor.setName("Water Level");
   waterTankSensor.setUnitOfMeasurement("%");
@@ -94,50 +127,24 @@ void setup()
 
   mqtt.begin(MQTT_BROKER_ADDR, MQTT_BROKER_PORT, MQTT_BROKER_USER, MQTT_BROKER_PASS);
   
-
-  float readings[READINGS_TO_TAKE];
-
-  for (int i = 0; i < READINGS_TO_TAKE; i++) {
-    readings[i] = hc.dist();
-    char buffer[60];
-    sprintf(buffer, "Water level (reading %d) is %f cm from the sensor", i, readings[i]);
-    log(buffer, "Water level (reading {ReadingNumber}) is {ReadingValue} cm from the sensor", "ReadingNumber", String(i), "ReadingValue", String(readings[i]));
-    delay(DELAY_BETWEEN_READINGS_IN_MS);
-  }
-  float averageReading = average(readings, READINGS_TO_TAKE);
-  log("Average reading is " + String(averageReading), "Average reading is {AverageValue} cm from the sensor", "AverageValue", String(averageReading));
-
-  float distanceFromBottomOfTank = TANK_SENSOR_HEIGHT_IN_CM - averageReading;
-  float percentageFull = (distanceFromBottomOfTank / TANK_OVERFLOW_HEIGHT_IN_CM) * 100;
-
-  log("Tank is " + String(percentageFull) + String("% full"), "Tank is {PercentFull}% full", "PercentFull", String(percentageFull));
-
-  if (percentageFull < 0)
-    log("Value is less than 0. Not going to publish the data.");
-  else if (percentageFull > 100)
-    log("Value is greater than 100. Not going to publish the data.");
-  else
-    SendData(percentageFull);
-
-  log("Setting water tank sensor value.");
-  waterTankSensor.setValue(percentageFull);
-  log("Looping.");
-  mqtt.loop();
-  log("Looping a second time.");
-  mqtt.loop();
-  log("Disconnecting from MQTT transport.");
-  mqtt.disconnect();
-
   flushLogs();
-
-  CheckForUpdate();
-  log("Going into deep sleep mode for " + String(SLEEPTIME_IN_MINUTES) + String(" minutes"), "Going into deep sleep mode for {SleepTime} minutes", "SleepTime", String(SLEEPTIME_IN_MINUTES));
-
-  flushLogs();
-
-  ESP.deepSleep( SLEEPTIME_IN_MINUTES * 60 * 1000000, WAKE_RF_DISABLED );
 }
 
 void loop()
 {
+  mqtt.loop();
+
+  unsigned long checkTime = millis();
+  if (lastWaterLevelCheckTime + DELAY_BETWEEN_CHECKING_WATER_LEVEL_IN_MS < checkTime) {
+    calculateWaterLevel();
+    flushLogs();
+    lastWaterLevelCheckTime = checkTime;
+  }
+
+  if (lastUpdateCheckTime + DELAY_BETWEEN_CHECKING_FOR_UPDATES_IN_MS < checkTime) {
+    CheckForUpdate();
+    flushLogs();
+    lastUpdateCheckTime = checkTime;
+  }
+  delay(1000);
 }

@@ -4,12 +4,13 @@
 #define WLAN_SSID  "${{ secrets.WLAN_SSID }}"
 #define WLAN_PASSWD "${{ secrets.WLAN_PASSWD }}"
 
-const int SLEEPTIME_IN_MINUTES = 3;
 const int WIFI_FAILED_TO_CONNECT_SLEEPTIME_IN_MINUTES = 5;
 const int TANK_SENSOR_HEIGHT_IN_CM = 180;
 const int TANK_OVERFLOW_HEIGHT_IN_CM = 156;
 const int READINGS_TO_TAKE = 10;
 const int DELAY_BETWEEN_READINGS_IN_MS = 50;
+const int DELAY_BETWEEN_CHECKING_WATER_LEVEL_IN_MS = 30 * 1000;
+const int DELAY_BETWEEN_CHECKING_FOR_UPDATES_IN_MS = 5 * 60 * 1000;
 
 //seq logging
 #define SEQ_URL      "${{ secrets.SEQ_URL }}"
