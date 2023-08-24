@@ -12,6 +12,8 @@ const int DELAY_BETWEEN_READINGS_IN_MS = 50;
 const int DELAY_BETWEEN_CHECKING_WATER_LEVEL_IN_MS = 30 * 1000;
 const int DELAY_BETWEEN_CHECKING_FOR_UPDATES_IN_MS = 5 * 60 * 1000;
 
+#define HOST_NAME    "WaterTankSensor"
+
 //seq logging
 #define SEQ_URL      "${{ secrets.SEQ_URL }}"
 #define SEQ_API_KEY  "${{ secrets.SEQ_API_KEY }}"
