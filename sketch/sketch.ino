@@ -65,10 +65,13 @@ void calculateWaterLevel() {
     readings[i] = hc.dist();
     char buffer[60];
     sprintf(buffer, "Water level (reading %d) is %f cm from the sensor", i, readings[i]);
-    log(buffer, "Water level (reading {ReadingNumber}) is {ReadingValue} cm from the sensor", "ReadingNumber", String(i), "ReadingValue", String(readings[i]));
+    log(buffer, "Water level (reading {ReadingNumber}) is {ReadingValue} cm from the sensor", "ReadingNumber", String(i + 1), "ReadingValue", String(readings[i]));
     delay(DELAY_BETWEEN_READINGS_IN_MS);
   }
   float averageReading = average(readings, READINGS_TO_TAKE);
+  if (averageReading == -1) {
+     log("Average reading was unable to be calculated");
+  }
   log("Average reading is " + String(averageReading), "Average reading is {AverageValue} cm from the sensor", "AverageValue", String(averageReading));
 
   float distanceFromBottomOfTank = TANK_SENSOR_HEIGHT_IN_CM - averageReading;
