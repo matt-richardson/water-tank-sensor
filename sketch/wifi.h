@@ -21,6 +21,9 @@ void ConnectWifi()
     rtcValid = true;
   }
 
+  WiFi.config(INADDR_NONE, INADDR_NONE, INADDR_NONE, INADDR_NONE); //workaround https://github.com/espressif/arduino-esp32/issues/2537
+  WiFi.setHostname(HOST_NAME);
+
   if( rtcValid ) {
     log("The RTC data was good, making a quick connection");
     WiFi.begin( WLAN_SSID, WLAN_PASSWD, rtcData.channel, rtcData.bssid, true );
