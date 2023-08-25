@@ -104,20 +104,21 @@ void flushLogs() {
     LogEntry logEntry = logs.dequeue(); 
     String formattedLogEntry = formatLogEntry(logEntry);
   }
+  if (postData != "") {
+    Serial.printf("Sending data to %s\n", SEQ_URL "/api/events/raw");
+    Serial.println(postData);
 
-  Serial.printf("Sending data to %s\n", SEQ_URL "/api/events/raw");
-  Serial.println(postData);
-
-  bool retry;
-  int attemptCount = 0;
-  do {
-    retry = false;
-    int returnCode = postDataToSeq(postData);
-    if (returnCode < 0 && attemptCount++ < 5) {
-      Serial.printf("Sending data to seq failed with %d. Retrying.\n", returnCode);
-      retry = true;
-    }
-  } while (retry);
+    bool retry;
+    int attemptCount = 0;
+    do {
+      retry = false;
+      int returnCode = postDataToSeq(postData);
+      if (returnCode < 0 && attemptCount++ < 5) {
+        Serial.printf("Sending data to seq failed with %d. Retrying.\n", returnCode);
+        retry = true;
+      }
+    } while (retry);
+  }
 }
 
 #endif
