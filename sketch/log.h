@@ -103,6 +103,7 @@ void flushLogs() {
   while(!logs.isEmpty()) {
     LogEntry logEntry = logs.dequeue(); 
     String formattedLogEntry = formatLogEntry(logEntry);
+    postData = postData + formattedLogEntry;
   }
   if (postData != "") {
     Serial.printf("Sending data to %s\n", SEQ_URL "/api/events/raw");
@@ -118,6 +119,8 @@ void flushLogs() {
         retry = true;
       }
     } while (retry);
+  } else {
+    Serial.println("Nothing to send to seq...");
   }
 }
 
