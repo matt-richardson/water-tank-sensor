@@ -34,7 +34,6 @@ void update_error(int err) {
 }
 
 void CheckForUpdate() {
-
   log("OTA Update: Checking for update", true);
 
   // The line below is optional. It can be used to blink the LED on the board during flashing
@@ -71,10 +70,9 @@ void CheckForUpdate() {
 
     case HTTP_UPDATE_OK:
       Serial.println("HTTP_UPDATE_OK");
-      log("OTA Update: Update successful", true);
+      log("OTA Update: Update successful, rebooting", true);
       delay(1000); // Wait a second then restart
       ESP.restart();
-
       break;
 
     default:
