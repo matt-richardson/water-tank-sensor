@@ -40,9 +40,9 @@ void SendDataToIoAdafruitCom(float percentageFull) {
   Serial.print("Sending data: ");
   Serial.println(postData);
   int httpCode = http.POST(postData);
-  Serial.println(httpCode); //Print HTTP return code
+  Serial.println("io.adafruit.com returned http code " + String(httpCode));
   String payload = http.getString();
-  Serial.println(payload); //Print request response payload
+  Serial.println("io.adafruit.com returned payload: " + payload); 
   http.end(); //Close connection
 }
 
