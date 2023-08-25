@@ -16,7 +16,7 @@ HASensorNumber waterTankSensor("WaterTankLevel");
 unsigned long lastWaterLevelCheckTime = 0;
 unsigned long lastUpdateCheckTime = 0;
 
-void SendDataToIoAdafruitCom(float percentageFull) {
+void sendDataToIoAdafruitCom(float percentageFull) {
   if (percentageFull < 0) {
     log("Value is less than 0. Not going to publish the data to io.adafruit.com.");
     return;
@@ -46,7 +46,7 @@ void SendDataToIoAdafruitCom(float percentageFull) {
   http.end(); //Close connection
 }
 
-void SendDataToHomeAssistant(float percentageFull) {
+void sendDataToHomeAssistant(float percentageFull) {
   if (percentageFull < 0) {
     log("Value is less than 0. Not going to publish the data to Home Assistant.");
     return;
@@ -60,9 +60,9 @@ void SendDataToHomeAssistant(float percentageFull) {
   waterTankSensor.setValue(percentageFull);
 }
 
-void SendData(float percentageFull) {
-  SendDataToIoAdafruitCom(percentageFull);
-  SendDataToHomeAssistant(percentageFull);
+void sendData(float percentageFull) {
+  sendDataToIoAdafruitCom(percentageFull);
+  sendDataToHomeAssistant(percentageFull);
 }
 
 float average (float * array, int len) {
@@ -105,15 +105,7 @@ void calculateWaterLevel() {
 
   log("Tank is " + String(percentageFull) + String("% full"), "Tank is {PercentFull}% full", "PercentFull", String(percentageFull));
 
-  if (percentageFull < 0)
-    log("Value is less than 0. Not going to publish the data to io.adafruit.com.");
-  else if (percentageFull > 100)
-    log("Value is greater than 100. Not going to publish the data to io.adafruit.com.");
-  else
-    SendData(percentageFull);
-
-  log("Setting Home Assistant water tank sensor value.");
-  waterTankSensor.setValue(percentageFull);
+  sendData(percentageFull);
 
   log("Finished checking water level.");
 }
