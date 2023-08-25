@@ -21,10 +21,11 @@ void log(String message, bool immediate = false);
 
 ArduinoQueue<LogEntry> logs(50);
 bool ntpSyncComplete = false;
-unsigned long millisecondsSinceBoot = millis();
 
 String formatLogEntry(LogEntry logEntry) {
   unsigned long timeNow = now();
+  unsigned long millisecondsSinceBoot = millis();
+
   time_t messageTime = timeNow - (millisecondsSinceBoot / 1000) + (logEntry.time / 1000);
   String formattedLogEntry = "";
   formattedLogEntry = formattedLogEntry + "{" + "\"@t\":\"" + dateTime(messageTime, ISO8601) + "\"" + logEntry.message + "}\n";
@@ -88,6 +89,7 @@ void syncTime() {
   if (!ntpSyncComplete) {
     log("Waiting for NTP sync before publishing logs");
     waitForSync(); //todo: this can block forever if there's no ip address
+    unsigned long millisecondsSinceBoot = millis();
     log("NTP sync complete. Time is " + dateTime(ISO8601) + ". It has been " + String(millisecondsSinceBoot) + " milliseconds since boot", 
         "NTP sync complete. Time is {Time}. It has been {MillisecondsSinceBoot} milliseconds since boot", 
         "Time", dateTime(ISO8601), 
