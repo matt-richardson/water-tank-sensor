@@ -16,23 +16,22 @@ ESP8266WiFiMulti WiFiMulti;
 
 void update_started() {
   Serial.println("CALLBACK:  HTTP update process started");
-  log("OTA Update: HTTP update process started");
+  log("OTA Update: HTTP update process started", true);
 }
 
 void update_finished() {
   Serial.println("CALLBACK:  HTTP update process finished");
-  log("OTA Update: HTTP update process finished");
-  flushLogs();
+  log("OTA Update: HTTP update process finished", true);
 }
 
 void update_progress(int cur, int total) {
   Serial.printf("CALLBACK:  HTTP update process at %d of %d bytes...\n", cur, total);
-  //log("OTA Update: HTTP update process at " + String(cur) + "of " + String(total) + " bytes...", "HTTP update process {CurrentBytes} of {TotalBytes}", "CurrentBytes", String(cur), "TotalBytes", String(total));
+  log("OTA Update: HTTP update process at " + String(cur) + "of " + String(total) + " bytes...", "HTTP update process {CurrentBytes} of {TotalBytes}", "CurrentBytes", String(cur), "TotalBytes", String(total), true);
 }
 
 void update_error(int err) {
   Serial.printf("CALLBACK:  HTTP update fatal error code %d\n", err);
-  //log("OTA Update: HTTP update fatal error code " + err, "HTTP update process failed with {ErrorCode}", "ErrorCode", String(err));
+  log("OTA Update: HTTP update fatal error code " + err, "HTTP update process failed with {ErrorCode}", "ErrorCode", String(err), true);
 }
 
 void CheckForUpdate() {
@@ -63,7 +62,7 @@ void CheckForUpdate() {
   switch (ret) {
     case HTTP_UPDATE_FAILED:
       Serial.printf("HTTP_UPDATE_FAILED Error (%d): %s\n", ESPhttpUpdate.getLastError(), ESPhttpUpdate.getLastErrorString().c_str());
-      // log("OTA Update: HTTP update failed with error code " + String(ESPhttpUpdate.getLastError()) + ": " + ESPhttpUpdate.getLastErrorString(), "HTTP update process failed with {ErrorCode}: {ErrorDescription}", "ErrorCode", String(ESPhttpUpdate.getLastError()), "ErrorDescription", ESPhttpUpdate.getLastErrorString());
+      log("OTA Update: HTTP update failed with error code " + String(ESPhttpUpdate.getLastError()) + ": " + ESPhttpUpdate.getLastErrorString(), "HTTP update process failed with {ErrorCode}: {ErrorDescription}", "ErrorCode", String(ESPhttpUpdate.getLastError()), "ErrorDescription", ESPhttpUpdate.getLastErrorString(), true);
       break;
 
     case HTTP_UPDATE_NO_UPDATES:
