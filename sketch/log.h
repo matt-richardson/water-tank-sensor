@@ -13,6 +13,12 @@ struct LogEntry {
     unsigned long time;
     String message;
 };
+
+void flushLogs();
+void log(String message, String messageTemplate, String value1Name, String value1, String value2Name, String value2, bool immediate = false);
+void log(String message, String messageTemplate, String value1Name, String value1, bool immediate = false);
+void log(String message, bool immediate = false);
+
 ArduinoQueue<LogEntry> logs(50);
 bool ntpSyncComplete = false;
 unsigned long millisecondsSinceBoot = millis();
@@ -41,7 +47,7 @@ int postDataToSeq(String postData) {
   return httpCode;
 }
 
-void log(String message, String messageTemplate, String value1Name, String value1, String value2Name, String value2, bool immediate = false) {
+void log(String message, String messageTemplate, String value1Name, String value1, String value2Name, String value2, bool immediate /*= false*/) {
   LogEntry logEntry;
 
   logEntry.time = millis();
@@ -64,25 +70,24 @@ void log(String message, String messageTemplate, String value1Name, String value
   if (value2Name != "")
     postData = postData + ",\"" + value2Name + "\": \"" + value2 + "\"";
   logEntry.message = postData;
-
+  logs.enqueue(logEntry);
   if (immediate) {
-    postDataToSeq(formatLogEntry(logEntry));
-  } else {
-    logs.enqueue(logEntry);
+    flushLogs();
   }
 }
 
-void log(String message, String messageTemplate, String value1Name, String value1, bool immediate = false) {
+void log(String message, String messageTemplate, String value1Name, String value1, bool immediate /*= false*/) {
   log(message, messageTemplate, value1Name, value1, /*value2Name:*/ "", /*value2:*/ "", immediate);
 }
-void log(String message, bool immediate = false) {
+
+void log(String message, bool immediate /*= false*/) {
   log(message, /*messageTemplate:*/ "", /*value1Name:*/ "", /*value1:*/ "", immediate);
 }
 
 void syncTime() {
   if (!ntpSyncComplete) {
     log("Waiting for NTP sync before publishing logs");
-    waitForSync();
+    waitForSync(); //todo: this can block forever if there's no ip address
     log("NTP sync complete. Time is " + dateTime(ISO8601) + ". It has been " + String(millisecondsSinceBoot) + " milliseconds since boot", 
         "NTP sync complete. Time is {Time}. It has been {MillisecondsSinceBoot} milliseconds since boot", 
         "Time", dateTime(ISO8601), 
