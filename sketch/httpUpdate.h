@@ -26,7 +26,6 @@ void update_finished() {
 
 void update_progress(int cur, int total) {
   Serial.printf("CALLBACK:  HTTP update process at %d of %d bytes...\n", cur, total);
-  log("OTA Update: HTTP update process at " + String(cur) + "of " + String(total) + " bytes...", "HTTP update process {CurrentBytes} of {TotalBytes}", "CurrentBytes", String(cur), "TotalBytes", String(total), true);
 }
 
 void update_error(int err) {
