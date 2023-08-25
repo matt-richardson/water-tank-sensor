@@ -46,6 +46,7 @@ void CheckForUpdate() {
   // on much longer than it will be off. Other pins than LED_BUILTIN may be used. The second
   // value is used to put the LED on. If the LED is on with HIGH, that value should be passed
   ESPhttpUpdate.setLedPin(LED_BUILTIN, LOW);
+  ESPhttpUpdate.rebootOnUpdate(false);
 
   // Add optional callback notifiers
   ESPhttpUpdate.onStart(update_started);
@@ -73,6 +74,9 @@ void CheckForUpdate() {
     case HTTP_UPDATE_OK:
       Serial.println("HTTP_UPDATE_OK");
       log("OTA Update: Update successful", true);
+      delay(1000); // Wait a second then restart
+      ESP.restart();
+
       break;
 
     default:
