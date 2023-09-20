@@ -148,24 +148,20 @@ void setup()
 
   mqtt.begin(MQTT_BROKER_ADDR, MQTT_BROKER_PORT, MQTT_BROKER_USER, MQTT_BROKER_PASS);
   
+  calculateWaterLevel();
+  CheckForUpdate();
   flushLogs();
+
+  mqtt.loop();
+  delay(1000);
+
+  flushLogs();
+
+  ESP.deepSleep( SLEEPTIME_IN_MINUTES * 60 * 1000000, WAKE_RF_DISABLED );
 }
 
 void loop()
 {
-  mqtt.loop();
 
-  unsigned long checkTime = millis();
-  if (lastWaterLevelCheckTime + DELAY_BETWEEN_CHECKING_WATER_LEVEL_IN_MS < checkTime) {
-    calculateWaterLevel();
     flushLogs();
-    lastWaterLevelCheckTime = checkTime;
-  }
-
-  if (lastUpdateCheckTime + DELAY_BETWEEN_CHECKING_FOR_UPDATES_IN_MS < checkTime) {
-    CheckForUpdate();
-    flushLogs();
-    lastUpdateCheckTime = checkTime;
-  }
-  delay(1000);
 }
