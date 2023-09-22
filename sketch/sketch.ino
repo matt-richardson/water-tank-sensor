@@ -15,6 +15,7 @@ HAMqtt mqtt(client, device);
 HASensorNumber waterTankSensor("WaterTankLevel");
 unsigned long lastWaterLevelCheckTime = 0;
 unsigned long lastUpdateCheckTime = 0;
+bool mqttIsConnected = false;
 
 void sendDataToIoAdafruitCom(float percentageFull) {
   if (percentageFull < 0) {
@@ -82,6 +83,7 @@ float average (float * array, int len) {
 
 void onMqttConnected() {
   log("MQTT is connected");
+  mqttIsConnected = true;
 }
 
 void calculateWaterLevel() {
@@ -149,20 +151,23 @@ void setup()
 
   mqtt.begin(MQTT_BROKER_ADDR, MQTT_BROKER_PORT, MQTT_BROKER_USER, MQTT_BROKER_PASS);
   
-  calculateWaterLevel();
-  CheckForUpdate();
-  flushLogs();
-
-  mqtt.loop();
-  delay(1000);
-
-  flushLogs();
-  delay(1000);
-
-  ESP.deepSleep( SLEEPTIME_IN_MINUTES * 60 * 1000000, WAKE_RF_DISABLED );
 }
 
 void loop()
 {
+  if (mqttIsConnected) {
+    calculateWaterLevel();
+    CheckForUpdate();
+    flushLogs();
 
+    mqtt.loop();
+    delay(1000);
+
+    flushLogs();
+    delay(1000);
+
+    ESP.deepSleep( SLEEPTIME_IN_MINUTES * 60 * 1000000, WAKE_RF_DISABLED );
+  }
+
+  delay(100);
 }
