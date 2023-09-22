@@ -144,6 +144,7 @@ void setup()
   waterTankSensor.setIcon("mdi:water");
   waterTankSensor.setName("Water Level");
   waterTankSensor.setUnitOfMeasurement("%");
+
   mqtt.onConnected(onMqttConnected);
 
   mqtt.begin(MQTT_BROKER_ADDR, MQTT_BROKER_PORT, MQTT_BROKER_USER, MQTT_BROKER_PASS);
@@ -156,6 +157,7 @@ void setup()
   delay(1000);
 
   flushLogs();
+  delay(1000);
 
   ESP.deepSleep( SLEEPTIME_IN_MINUTES * 60 * 1000000, WAKE_RF_DISABLED );
 }
@@ -163,5 +165,4 @@ void setup()
 void loop()
 {
 
-    flushLogs();
 }
