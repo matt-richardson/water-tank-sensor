@@ -131,6 +131,7 @@ void setup()
 
   Serial.println();
 
+  log("Configuring HomeAssistant device");
   // configure HomeAssistant device
   byte mac[WL_MAC_ADDR_LENGTH];
   WiFi.macAddress(mac);
@@ -140,6 +141,7 @@ void setup()
   device.enableSharedAvailability();
   device.enableLastWill();
 
+  log("Configuring HomeAssistant sensor");
   // configure HomeAssistant sensor
   waterTankSensor.setIcon("mdi:water");
   waterTankSensor.setName("Water Level");
@@ -147,13 +149,18 @@ void setup()
 
   mqtt.onConnected(onMqttConnected);
 
+  log("Being mqtt");
   mqtt.begin(MQTT_BROKER_ADDR, MQTT_BROKER_PORT, MQTT_BROKER_USER, MQTT_BROKER_PASS);
+  log("mqtt started");
   
 }
 
 void loop()
 {
+  log("loop()");
+
   if (mqtt.isConnected()) {
+    log("mqtt.isConnected :success:");
     calculateWaterLevel();
     CheckForUpdate();
     flushLogs();
