@@ -16,7 +16,7 @@ HASensorNumber waterTankSensor("WaterTankLevel");
 unsigned long lastWaterLevelCheckTime = 0;
 unsigned long lastUpdateCheckTime = 0;
 
-void sendDataToIoAdafruitCom(float percentageFull) {
+void sendDataToIoAdafruitDotCom(float percentageFull) {
   if (percentageFull < 0) {
     log("Value is less than 0. Not going to publish the data to io.adafruit.com.");
     return;
@@ -37,11 +37,11 @@ void sendDataToIoAdafruitCom(float percentageFull) {
   http.addHeader("X-AIO-Key", IO_KEY);
   String postDataPrefix = "value=";
   String postData = postDataPrefix + String(percentageFull);
-  log("Sending data {PostData}", "PostData", postData);
+  log("Sending data " + postData, "Sending data {PostData}", "PostData", postData);
   int httpCode = http.POST(postData);
-  log("io.adafruit.com returned http code {HttpStatusCode}", "HttpStatusCode", String(httpCode));
+  log("io.adafruit.com returned http code " + HttpStatusCode, "io.adafruit.com returned http code {HttpStatusCode}", "HttpStatusCode", String(httpCode));
   String payload = http.getString();
-  log("io.adafruit.com returned payload {Payload}", "Payload", payload, true);
+  log("io.adafruit.com returned payload " + Payload, "io.adafruit.com returned payload {Payload}", "Payload", payload, true);
   http.end(); //Close connection
 }
 
@@ -60,7 +60,7 @@ void sendDataToHomeAssistant(float percentageFull) {
 }
 
 void sendData(float percentageFull) {
-  sendDataToIoAdafruitCom(percentageFull);
+  sendDataToIoAdafruitDotCom(percentageFull);
   sendDataToHomeAssistant(percentageFull);
 }
 
@@ -173,6 +173,7 @@ void loop()
     delay(1000);
 
     log("my work here is done. sleeping.", true);
+    uint64_t sleepTimeInMicroseconds = SLEEPTIME_IN_MINUTES * 60 * 1000000
     ESP.deepSleep( SLEEPTIME_IN_MINUTES * 60 * 1000000, WAKE_RF_DISABLED );
   } else {
     log("mqtt is not connected. boo.", true);
