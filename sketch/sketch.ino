@@ -110,8 +110,7 @@ void calculateWaterLevel() {
   log("Finished checking water level.");
 }
 
-void setup()
-{
+void setup() {
   Serial.begin(115200);
 
   ConnectWifi();
@@ -147,26 +146,37 @@ void setup()
 
   mqtt.onConnected(onMqttConnected);
 
+  log("Calling mqtt.begin()", true);
   mqtt.begin(MQTT_BROKER_ADDR, MQTT_BROKER_PORT, MQTT_BROKER_USER, MQTT_BROKER_PASS);
+  log("Called mqtt.begin()", true);
+    
   // it doesn't connect until the first `loop()` call
+  log("Calling mqtt.loop()", true);
   mqtt.loop();
+  log("Called mqtt.loop()", true);
 }
 
 void loop()
 {
+  log("loop()", true);
+  mqtt.loop();
+
   if (mqtt.isConnected()) {
+    log("mqtt is connected. yay.", true);
     calculateWaterLevel();
     CheckForUpdate();
     flushLogs();
 
-    mqtt.loop();
     delay(1000);
 
     flushLogs();
     delay(1000);
 
+    log("my work here is done. sleeping.", true);
     ESP.deepSleep( SLEEPTIME_IN_MINUTES * 60 * 1000000, WAKE_RF_DISABLED );
+  } else {
+    log("mqtt is not connected. boo.", true);
   }
 
-  delay(200);
+  delay(2000);
 }
