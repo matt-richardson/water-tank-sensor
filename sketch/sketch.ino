@@ -39,9 +39,9 @@ void sendDataToIoAdafruitDotCom(float percentageFull) {
   String postData = postDataPrefix + String(percentageFull);
   log("Sending data " + postData, "Sending data {PostData}", "PostData", postData);
   int httpCode = http.POST(postData);
-  log("io.adafruit.com returned http code " + HttpStatusCode, "io.adafruit.com returned http code {HttpStatusCode}", "HttpStatusCode", String(httpCode));
+  log("io.adafruit.com returned http code " + httpCode, "io.adafruit.com returned http code {HttpStatusCode}", "HttpStatusCode", String(httpCode));
   String payload = http.getString();
-  log("io.adafruit.com returned payload " + Payload, "io.adafruit.com returned payload {Payload}", "Payload", payload, true);
+  log("io.adafruit.com returned payload " + payload, "io.adafruit.com returned payload {Payload}", "Payload", payload, true);
   http.end(); //Close connection
 }
 
@@ -173,8 +173,8 @@ void loop()
     delay(1000);
 
     log("my work here is done. sleeping.", true);
-    uint64_t sleepTimeInMicroseconds = SLEEPTIME_IN_MINUTES * 60 * 1000000
-    ESP.deepSleep( SLEEPTIME_IN_MINUTES * 60 * 1000000, WAKE_RF_DISABLED );
+    uint64_t sleepTimeInMicroseconds = SLEEPTIME_IN_MINUTES * 60 * 1000000;
+    ESP.deepSleep( sleepTimeInMicroseconds, WAKE_RF_DISABLED );
   } else {
     log("mqtt is not connected. boo.", true);
   }
