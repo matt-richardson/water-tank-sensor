@@ -26,7 +26,7 @@ void sendDataToIoAdafruitCom(float percentageFull) {
     return;
   }
 
-  Serial.println("Sending data to io.adafruit.com");
+  log("Sending data to io.adafruit.com");
 
   HTTPClient http;
   WiFiClientSecure wifiClient;
@@ -37,12 +37,11 @@ void sendDataToIoAdafruitCom(float percentageFull) {
   http.addHeader("X-AIO-Key", IO_KEY);
   String postDataPrefix = "value=";
   String postData = postDataPrefix + String(percentageFull);
-  Serial.print("Sending data: ");
-  Serial.println(postData);
+  log("Sending data {PostData}", "PostData", postData);
   int httpCode = http.POST(postData);
-  Serial.println("io.adafruit.com returned http code " + String(httpCode));
+  log("io.adafruit.com returned http code {HttpStatusCode}", "HttpStatusCode", String(httpCode));
   String payload = http.getString();
-  Serial.println("io.adafruit.com returned payload: " + payload); 
+  log("io.adafruit.com returned payload {Payload}", "Payload", payload, true);
   http.end(); //Close connection
 }
 
@@ -55,7 +54,7 @@ void sendDataToHomeAssistant(float percentageFull) {
     log("Value is greater than 100. Not going to publish the data to Home Assistant.");
     return;
   }
-  log("Setting Home Assistant water tank sensor value to " + String(percentageFull), "Setting Home Assistant water tank sensor value to {SensorValue}%", "SensorValue", String(percentageFull));
+  log("Setting Home Assistant water tank sensor value to " + String(percentageFull), "Setting Home Assistant water tank sensor value to {SensorValue}%", "SensorValue", String(percentageFull), true);
 
   waterTankSensor.setValue(percentageFull);
 }
@@ -98,16 +97,16 @@ void calculateWaterLevel() {
   if (averageReading == -1) {
      log("Average reading was unable to be calculated");
   }
-  log("Average reading is " + String(averageReading), "Average reading is {AverageValue} cm from the sensor", "AverageValue", String(averageReading));
+  log("Average reading is " + String(averageReading), "Average reading is {AverageValue} cm from the sensor", "AverageValue", String(averageReading), true);
 
   float distanceFromBottomOfTank = TANK_SENSOR_HEIGHT_IN_CM - averageReading;
   float percentageFull = (distanceFromBottomOfTank / TANK_OVERFLOW_HEIGHT_IN_CM) * 100;
 
-  log("Tank is " + String(percentageFull) + String("% full"), "Tank is {PercentFull}% full", "PercentFull", String(percentageFull));
+  log("Tank is " + String(percentageFull) + String("% full"), "Tank is {PercentFull}% full", "PercentFull", String(percentageFull), true);
 
   sendData(percentageFull);
 
-  log("Finished checking water level.");
+  log("Finished checking water level.", true);
 }
 
 void setup() {
@@ -128,7 +127,7 @@ void setup() {
   log("MQTT_BROKER_PORT: " + String(MQTT_BROKER_PORT), "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "MQTT_BROKER_PORT", "ConfigValue", String(MQTT_BROKER_PORT));
   log("MQTT_BROKER_USER: " MQTT_BROKER_USER, "Config entry {ConfigName} = {ConfigValue}", "ConfigName", "MQTT_BROKER_USER", "ConfigValue", MQTT_BROKER_USER);
 
-  Serial.println();
+  flushLogs();
 
   // configure HomeAssistant device
   byte mac[WL_MAC_ADDR_LENGTH];
@@ -166,6 +165,7 @@ void loop()
     calculateWaterLevel();
     CheckForUpdate();
     flushLogs();
+    mqtt.loop();
 
     delay(1000);
 
