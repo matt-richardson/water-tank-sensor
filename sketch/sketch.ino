@@ -26,7 +26,7 @@ void sendDataToIoAdafruitDotCom(float percentageFull) {
     return;
   }
 
-  log("Sending data to io.adafruit.com");
+  log("Sending data to io.adafruit.com", true);
 
   HTTPClient http;
   WiFiClientSecure wifiClient;
@@ -37,12 +37,13 @@ void sendDataToIoAdafruitDotCom(float percentageFull) {
   http.addHeader("X-AIO-Key", IO_KEY);
   String postDataPrefix = "value=";
   String postData = postDataPrefix + String(percentageFull);
-  log("Sending data " + postData, "Sending data {PostData}", "PostData", postData);
+  log("Sending data " + postData, "Sending data {PostData}", "PostData", postData, true);
   int httpCode = http.POST(postData);
-  log("io.adafruit.com returned http code " + httpCode, "io.adafruit.com returned http code {HttpStatusCode}", "HttpStatusCode", String(httpCode));
+  log("io.adafruit.com returned http code " + httpCode, "io.adafruit.com returned http code {HttpStatusCode}", "HttpStatusCode", String(httpCode), true);
   String payload = http.getString();
   log("io.adafruit.com returned payload " + payload, "io.adafruit.com returned payload {Payload}", "Payload", payload, true);
   http.end(); //Close connection
+  log("Sent data to io.adafruit.com", true);
 }
 
 void sendDataToHomeAssistant(float percentageFull) {
@@ -145,23 +146,18 @@ void setup() {
 
   mqtt.onConnected(onMqttConnected);
 
-  log("Calling mqtt.begin()", true);
   mqtt.begin(MQTT_BROKER_ADDR, MQTT_BROKER_PORT, MQTT_BROKER_USER, MQTT_BROKER_PASS);
-  log("Called mqtt.begin()", true);
     
   // it doesn't connect until the first `loop()` call
-  log("Calling mqtt.loop()", true);
   mqtt.loop();
-  log("Called mqtt.loop()", true);
 }
 
 void loop()
 {
-  log("loop()", true);
   mqtt.loop();
 
   if (mqtt.isConnected()) {
-    log("mqtt is connected. yay.", true);
+    log("mqtt is connected", true);
     calculateWaterLevel();
     CheckForUpdate();
     flushLogs();
@@ -172,12 +168,12 @@ void loop()
     flushLogs();
     delay(1000);
 
-    log("my work here is done. sleeping.", true);
+    log("Finished. Sleeping for " + String(SLEEPTIME_IN_MINUTES) + " minutes", "Finished; sleeping for {SleepTime} minutes", "SleepTime", SLEEPTIME_IN_MINUTES, true);
     uint64_t sleepTimeInMicroseconds = SLEEPTIME_IN_MINUTES * 60 * 1000000;
     ESP.deepSleep( sleepTimeInMicroseconds, WAKE_RF_DISABLED );
   } else {
-    log("mqtt is not connected. boo.", true);
+    log("mqtt is not connected; will wait for 2 seconds and try again", true);
   }
 
-  delay(2000);
+  delay(2000); // milliseconds
 }
