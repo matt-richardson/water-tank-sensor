@@ -168,7 +168,7 @@ void loop()
     flushLogs();
     delay(1000);
 
-    log("Finished. Sleeping for " + String(SLEEPTIME_IN_MINUTES) + " minutes", "Finished; sleeping for {SleepTime} minutes", "SleepTime", SLEEPTIME_IN_MINUTES, true);
+    log("Finished. Sleeping for " + String(SLEEPTIME_IN_MINUTES) + " minutes", "Finished; sleeping for {SleepTime} minutes", "SleepTime", String(SLEEPTIME_IN_MINUTES), true);
     uint64_t sleepTimeInMicroseconds = SLEEPTIME_IN_MINUTES * 60 * 1000000;
     ESP.deepSleep( sleepTimeInMicroseconds, WAKE_RF_DISABLED );
   } else {
