@@ -58,7 +58,7 @@ void ConnectWifi()
   }
   Serial.println("");
 
-  log("Successfully connected to wifi SSID " + WLAN_SSID + "!", "Successfully connected to wifi SSID {WLAN_SSID}", "WLAN_SSID", WLAN_SSID);
+  log("Successfully connected to wifi SSID " + String(WLAN_SSID) + "!", "Successfully connected to wifi SSID {WLAN_SSID}", "WLAN_SSID", WLAN_SSID);
   String ipAddress = WiFi.localIP().toString();
   log("IP address is " + ipAddress, "IP Address is {IPAddress}", "IPAddress", ipAddress);
 
