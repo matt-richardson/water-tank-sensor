@@ -42,8 +42,10 @@ int postDataToSeq(String postData) {
 
   int httpCode = http.POST(postData);
   Serial.println("Seq returned http code " + String(httpCode));
-  String payload = http.getString();
-  Serial.println("Seq returned payload: " + payload); 
+  if (httpCode > 0) {
+    String payload = http.getString();
+    Serial.println("Seq returned payload: " + payload); 
+  }
   http.end();
   return httpCode;
 }
@@ -116,10 +118,14 @@ void flushLogs() {
     do {
       retry = false;
       int returnCode = postDataToSeq(postData);
-      if (returnCode < 0 && attemptCount++ < 5) {
-        Serial.printf("Sending data to seq failed with %d. Retrying.\n", returnCode);
-        retry = true;
-      }
+      if (returnCode < 0) {
+        if (attemptCount++ < 5) {
+          Serial.printf("Sending data to seq failed with %d. Retrying.\n", returnCode);
+          retry = true;
+        } else {
+          Serial.printf("Sending data to seq failed with %d. Giving up.\n", returnCode);
+        }
+      } 
     } while (retry);
   } else {
     Serial.println("Nothing to send to seq...");
