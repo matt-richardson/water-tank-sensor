@@ -157,7 +157,7 @@ void loop()
   mqtt.loop();
 
   if (mqtt.isConnected()) {
-    log("mqtt is connected", true);
+    log("Now connected to the MQTT broker; proceeding with checking tank level", true);
     calculateWaterLevel();
     CheckForUpdate();
     flushLogs();
