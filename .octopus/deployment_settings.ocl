@@ -1,10 +1,8 @@
-connectivity_policy {
-}
+connectivity_policy {}
 
 versioning_strategy {
-
     donor_package {
         package = "water-tank-sensor"
-        step = "Deploy package to arduino-updater staging folder"
+        step = "deploy-package-to-arduino-updater-staging-folder"
     }
 }

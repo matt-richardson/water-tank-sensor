@@ -1,4 +1,5 @@
-step "Deploy package to arduino-updater staging folder" {
+step "deploy-package-to-arduino-updater-staging-folder" {
+    name = "Deploy package to arduino-updater staging folder"
     properties = {
         Octopus.Action.TargetRoles = "nas"
     }
@@ -20,14 +21,14 @@ step "Deploy package to arduino-updater staging folder" {
                   -v /volume1/docker/arduino-updater:/docker/arduino-updater \
                   alpine:latest \
                   cp /docker/tentacle/tmp/water-tank-sensor.#{Octopus.Action.Package[water-tank-sensor].PackageVersion}.bin /docker/arduino-updater/packages
-            EOT
+                EOT
             Octopus.Action.Script.ScriptSource = "Inline"
             Octopus.Action.Script.Syntax = "Bash"
         }
 
         packages "water-tank-sensor" {
             acquisition_location = "Server"
-            feed = "Octopus Server (built-in)"
+            feed = "octopus-server-built-in"
             package_id = "water-tank-sensor"
             properties = {
                 Extract = "True"
