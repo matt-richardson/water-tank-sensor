@@ -136,5 +136,4 @@ jobs:
         api_key: ${{ secrets.OCTOPUS_API_KEY }}
         project: 'Water Tank Sensor'
         server: ${{ secrets.OCTOPUS_SERVER }}
-        release_number: ${{ steps.calculate_version.outputs.octoversion_fullsemver }}
         packages: water-tank-sensor:${{ steps.calculate_version.outputs.octoversion_fullsemver }}
