@@ -1,8 +1,5 @@
 connectivity_policy {}
 
 versioning_strategy {
-    donor_package {
-        package = "water-tank-sensor"
-        step = "deploy-package-to-arduino-updater-staging-folder"
-    }
+    template = "#{Octopus.Date.Year}.#{Octopus.Date.Month}.#{Octopus.Date.Day}.#{Octopus.Version.NextRevision}"
 }
